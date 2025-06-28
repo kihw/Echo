@@ -127,3 +127,8 @@ coverage/
 # Backup files
 *.bak
 *.backup
+
+# Volumes - exclude all volumes direc
+/volumes/
+# But allow extended.conf
+!/volumes/lidarr/config/extended.conf
