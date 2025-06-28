@@ -1,0 +1,111 @@
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: ${POSTGRES_CONTAINER}
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    ports:
+      - "${POSTGRES_PORT}:5432"
+    volumes:
+      - ${POSTGRES_DATA_PATH}:/var/lib/postgresql/data
+      - ${POSTGRES_INIT_SQL_PATH}:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - echo_network
+
+  # Redis for caching and sessions
+  redis:
+    image: redis:7-alpine
+    container_name: ${REDIS_CONTAINER}
+    restart: unless-stopped
+    ports:
+      - "${REDIS_PORT}:6379"
+    volumes:
+      - ${REDIS_DATA_PATH}:/data
+    networks:
+      - echo_network
+
+  # Echo Backend API
+  echo_backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: ${BACKEND_CONTAINER}
+    restart: unless-stopped
+    ports:
+      - "${BACKEND_PORT}:3000"
+    environment:
+      - NODE_ENV=${NODE_ENV}
+      - DATABASE_URL=${DATABASE_URL}
+      - REDIS_URL=${REDIS_URL}
+    volumes:
+      - ${BACKEND_APP_PATH}:/app
+      - ${BACKEND_NODE_MODULES_PATH}
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - echo_network
+    command: npm run dev
+
+  # Echo Frontend (Next.js)
+  echo_frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: ${FRONTEND_CONTAINER}
+    restart: unless-stopped
+    ports:
+      - "${FRONTEND_PORT}:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_API_URL}
+    volumes:
+      - ${FRONTEND_APP_PATH}:/app
+      - ${FRONTEND_NODE_MODULES_PATH}
+    depends_on:
+      - echo_backend
+    networks:
+      - echo_network
+    command: npm run dev
+
+  # Lidarr for music collection management
+  lidarr:
+    image: lscr.io/linuxserver/lidarr:latest
+    container_name: ${LIDARR_CONTAINER}
+    restart: unless-stopped
+    environment:
+      - PUID=${LIDARR_PUID}
+      - PGID=${LIDARR_PGID}
+      - TZ=${LIDARR_TZ}
+    ports:
+      - "${LIDARR_PORT}:8686"
+    volumes:
+      - ${LIDARR_CONFIG_PATH}:/config
+      - ${LIDARR_MUSIC_PATH}:/music
+      - ${LIDARR_DOWNLOADS_PATH}:/downloads
+      - ${LIDARR_EXTENDED1}:/custom-services.d
+      - ${LIDARR_EXTENDED2}:/custom-cont-init.d
+    networks:
+      - echo_network
+
+  # pgAdmin for database management (optional)
+  pgadmin:
+    image: dpage/pgadmin4:latest
+    container_name: ${PGADMIN_CONTAINER}
+    restart: unless-stopped
+    environment:
+      PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
+      PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
+    ports:
+      - "${PGADMIN_PORT}:80"
+    depends_on:
+      - postgres
+    networks:
+      - echo_network
+
+networks:
+  echo_network:
+    driver: bridge
