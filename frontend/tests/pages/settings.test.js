@@ -57,7 +57,7 @@ describe('SettingsPage', () => {
   });
 
   it('should not render when user is not authenticated', () => {
-    (useAuth as jest.Mock).mockReturnValue({
+    useAuth.mockReturnValue({
       user: null,
       updateUser: mockUpdateUser,
     });
@@ -146,7 +146,7 @@ describe('SettingsPage', () => {
       },
     };
 
-    (useAuth as jest.Mock).mockReturnValue({
+    useAuth.mockReturnValue({
       user: customUser,
       updateUser: mockUpdateUser,
     });

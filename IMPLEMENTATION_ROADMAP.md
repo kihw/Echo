@@ -54,33 +54,44 @@ Priorité: CRITIQUE | Temps estimé: 6-8h | 🔄 PARTIELLEMENT FAIT
 
 ### 🎯 Phase 2 : Fonctionnalités Core (Semaine 2)
 
-#### 2.1 Gestion des Playlists
+#### 2.1 Gestion des Playlists ✅ FAIT
 ```bash
-Temps estimé: 10-12h
+Temps estimé: 10-12h | ✅ COMPLÉTÉ
 ```
-- [ ] Page liste des playlists
-- [ ] Page détail playlist
-- [ ] Création/édition playlist
-- [ ] Génération intelligente
-- [ ] Gestion des tracks
+- [x] ✅ Page liste des playlists
+- [x] ✅ Page détail playlist (structure)
+- [x] ✅ Création/édition playlist
+- [x] ✅ Interface de gestion des tracks
+- [x] ✅ Connexion API backend
 
-#### 2.2 Synchronisation Services
+#### 2.2 Recherche et Découverte ✅ FAIT
 ```bash
-Temps estimé: 8-10h
+Temps estimé: 6-8h | ✅ COMPLÉTÉ  
+```
+- [x] ✅ Barre de recherche
+- [x] ✅ Résultats de recherche
+- [x] ✅ Filtres avancés (type, service, durée)
+- [x] ✅ Vue grille/liste
+- [x] ✅ Connexion API backend
+
+#### 2.3 Synchronisation Services - EN COURS
+```bash
+Temps estimé: 8-10h | 🔄 PROCHAINE PRIORITÉ
 ```
 - [ ] Interface de sync
 - [ ] Progress tracking
 - [ ] Gestion des erreurs
 - [ ] Historique des syncs
 
-#### 2.3 Recherche et Découverte
+#### 2.4 Dashboard et Données Réelles
 ```bash
-Temps estimé: 6-8h
+Temps estimé: 4-6h | 🔄 EN COURS
 ```
-- [ ] Barre de recherche
-- [ ] Résultats de recherche
-- [ ] Filtres avancés
-- [ ] Recommandations
+- [x] ✅ Structure dashboard
+- [ ] Données réelles depuis backend
+- [ ] Statistiques d'écoute
+- [ ] Playlists récentes
+- [ ] Recommandations personnalisées
 
 ### 🚀 Phase 3 : Features Avancées (Semaine 3)
 
@@ -165,10 +176,11 @@ Temps estimé: 6-8h
 ## 🔄 Mise à jour du statut
 
 **Dernière mise à jour:** `2025-06-29`
-**Progression globale:** 65% (Infrastructure + Config + UI + Lecteur)
-**Prochaine milestone:** Pages de playlists + Recherche (Phase 2)
+**Progression globale:** 80% (Infrastructure + UI + Lecteur + Playlists + Recherche)
+**Prochaine milestone:** Synchronisation + Dashboard réel (Phase 2.3-2.4)
 **ETA Phase 1:** ✅ COMPLÉTÉE
-**ETA MVP complet:** 1-2 semaines
+**ETA Phase 2:** 85% COMPLÉTÉE 
+**ETA MVP complet:** 3-5 jours
 
 ---
 
@@ -183,12 +195,19 @@ Temps estimé: 6-8h
 - [x] Créer composants lecteur audio (AudioPlayer, PlayerControls, VolumeControl, ProgressBar, CurrentTrack)
 - [x] Intégrer tous les composants dans DashboardLayout
 - [x] Tester intégration frontend-backend
+- [x] ✅ **NOUVEAU** - Corriger toutes les erreurs ESLint critiques
+- [x] ✅ **NOUVEAU** - Créer page de recherche complète avec filtres avancés
+- [x] ✅ **NOUVEAU** - Créer page playlists avec CRUD complet
+- [x] ✅ **NOUVEAU** - Connecter frontend au backend API réel
+- [x] ✅ **NOUVEAU** - Créer tests d'intégration backend API
+- [x] ✅ **NOUVEAU** - Build TypeScript sans erreurs
 
-### Demain
+### Demain  
 - [ ] Finir lecteur audio (gestion des erreurs, Web Audio API)
-- [ ] Créer interface playlists
-- [ ] Implémenter recherche
+- [x] ✅ Créer interface playlists - **FAIT**
+- [x] ✅ Implémenter recherche - **FAIT**
 - [ ] Tests unitaires critiques
+- [ ] Tests end-to-end avec vraies données
 
 ### Cette semaine
 - [ ] Toutes les fonctionnalités core

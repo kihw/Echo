@@ -31,12 +31,12 @@ interface AuthContextType {
   user: User | null;
   isAuthenticated: boolean;
   isLoading: boolean;
-  login: (email: string, password: string) => Promise<void>;
+  login: (_email: string, _password: string) => Promise<void>;
   loginWithSpotify: () => Promise<void>;
   loginWithDeezer: () => Promise<void>;
-  register: (email: string, password: string, displayName: string) => Promise<void>;
+  register: (_email: string, _password: string, _displayName: string) => Promise<void>;
   logout: () => Promise<void>;
-  updateUser: (updates: Partial<User>) => Promise<void>;
+  updateUser: (_updates: Partial<User>) => Promise<void>;
   refreshUser: () => Promise<void>;
 }
 

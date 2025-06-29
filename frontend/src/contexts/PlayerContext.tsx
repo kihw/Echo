@@ -52,31 +52,31 @@ export interface PlayerState {
 
 interface PlayerContextType extends PlayerState {
   // Playback controls
-  play: (track?: Track, playlist?: Playlist) => Promise<void>;
+  play: (_track?: Track, _playlist?: Playlist) => Promise<void>;
   pause: () => Promise<void>;
   resume: () => Promise<void>;
   stop: () => void;
   next: () => Promise<void>;
   previous: () => Promise<void>;
-  seek: (position: number) => Promise<void>;
-  setVolume: (volume: number) => Promise<void>;
+  seek: (_position: number) => Promise<void>;
+  setVolume: (_volume: number) => Promise<void>;
 
   // Queue management
-  addToQueue: (track: Track) => Promise<void>;
-  removeFromQueue: (index: number) => void;
+  addToQueue: (_track: Track) => Promise<void>;
+  removeFromQueue: (_index: number) => void;
   clearQueue: () => Promise<void>;
-  playFromQueue: (index: number) => Promise<void>;
+  playFromQueue: (_index: number) => Promise<void>;
 
   // Player settings
-  setRepeat: (mode: 'off' | 'one' | 'all') => Promise<void>;
-  setShuffle: (enabled: boolean) => Promise<void>;
+  setRepeat: (_mode: 'off' | 'one' | 'all') => Promise<void>;
+  setShuffle: (_enabled: boolean) => Promise<void>;
 
   // Playlist management
-  playPlaylist: (playlist: Playlist, startIndex?: number) => Promise<void>;
+  playPlaylist: (_playlist: Playlist, _startIndex?: number) => Promise<void>;
 
   // Favorites
-  toggleFavorite: (track: Track) => Promise<void>;
-  isFavorite: (trackId: string) => boolean;
+  toggleFavorite: (_track: Track) => Promise<void>;
+  isFavorite: (_trackId: string) => boolean;
 }
 
 const PlayerContext = createContext<PlayerContextType | undefined>(undefined);

@@ -113,7 +113,7 @@ interface PaginatedData<T> {
 }
 
 export function usePaginatedApi<T = any>(
-  apiFunction: (page: number, limit: number, ...args: any[]) => Promise<any>,
+  apiFunction: (_page: number, _limit: number, ..._args: any[]) => Promise<any>,
   options: UsePaginatedApiOptions = {}
 ) {
   const { limit = 20, initialPage = 1, immediate = false, onSuccess, onError } = options;
@@ -244,7 +244,7 @@ interface UseCachedApiOptions extends UseApiOptions {
 const cache = new Map<string, { data: any; timestamp: number }>();
 
 export function useCachedApi<T = any>(
-  apiFunction: (...args: any[]) => Promise<any>,
+  apiFunction: (..._args: any[]) => Promise<any>,
   options: UseCachedApiOptions
 ) {
   const { cacheKey, cacheDuration = 5 * 60 * 1000, ...apiOptions } = options; // 5 minutes par défaut
@@ -308,11 +308,11 @@ export function useCachedApi<T = any>(
 interface UseRetryApiOptions extends UseApiOptions {
   maxRetries?: number;
   retryDelay?: number;
-  shouldRetry?: (error: ApiError) => boolean;
+  shouldRetry?: (_error: ApiError) => boolean;
 }
 
 export function useRetryApi<T = any>(
-  apiFunction: (...args: any[]) => Promise<any>,
+  apiFunction: (..._args: any[]) => Promise<any>,
   options: UseRetryApiOptions = {}
 ) {
   const {
@@ -344,7 +344,9 @@ export function useRetryApi<T = any>(
         }
 
         // Attendre avant de réessayer
-        await new Promise(resolve => setTimeout(resolve, retryDelay * currentRetry));
+        const delay = retryDelay * currentRetry;
+        // eslint-disable-next-line no-await-in-loop
+        await new Promise(resolve => setTimeout(resolve, delay));
       }
     }
   }, [api, maxRetries, retryDelay, shouldRetry]);

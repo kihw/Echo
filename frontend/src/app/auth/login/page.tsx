@@ -112,7 +112,7 @@ export default function LoginPage() {
               <div>
                 <div className="flex items-center justify-between mb-2">
                   <label className="block text-sm font-medium text-secondary-700">
-                                        Adresse email
+                    Adresse email
                   </label>
                   <div className="flex space-x-1">
                     <button
@@ -120,14 +120,14 @@ export default function LoginPage() {
                       onClick={() => { setEmail('test@echo.com'); setPassword('password123'); }}
                       className="text-xs px-2 py-1 bg-blue-100 text-blue-700 rounded hover:bg-blue-200 transition-colors"
                     >
-                                            Test
+                      Test
                     </button>
                     <button
                       type="button"
                       onClick={() => { setEmail('admin@echo.com'); setPassword('admin123'); }}
                       className="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded hover:bg-purple-200 transition-colors"
                     >
-                                            Admin
+                      Admin
                     </button>
                   </div>
                 </div>
@@ -148,7 +148,7 @@ export default function LoginPage() {
               {/* Password Field */}
               <div>
                 <label className="block text-sm font-medium text-secondary-700 mb-2">
-                                    Mot de passe
+                  Mot de passe
                 </label>
                 <div className="relative">
                   <Lock className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-secondary-400" />
@@ -178,7 +178,7 @@ export default function LoginPage() {
                   <span className="ml-2 text-secondary-600">Se souvenir de moi</span>
                 </label>
                 <Link href="/auth/forgot-password" className="text-primary-600 hover:text-primary-700 font-medium">
-                                    Mot de passe oublié ?
+                  Mot de passe oublié ?
                 </Link>
               </div>
 
@@ -232,9 +232,9 @@ export default function LoginPage() {
             {/* Register Link */}
             <div className="mt-8 text-center">
               <p className="text-secondary-600">
-                                Pas encore de compte ?{' '}
+                Pas encore de compte ?{' '}
                 <Link href="/auth/register" className="text-primary-600 hover:text-primary-700 font-medium">
-                                    Créer un compte
+                  Créer un compte
                 </Link>
               </p>
             </div>

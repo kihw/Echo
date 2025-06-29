@@ -186,7 +186,7 @@ export default function RegisterPage() {
                         <div
                           key={i}
                           className={`h-1 flex-1 rounded-full transition-colors ${i < passwordStrength ? strengthColors[passwordStrength - 1] : 'bg-secondary-200'
-                          }`}
+                            }`}
                         />
                       ))}
                     </div>

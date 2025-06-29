@@ -338,7 +338,7 @@ export const ANIMATION_DURATIONS = {
   SLOW: '500ms'
 } as const;
 
-export default {
+const ECHO_CONSTANTS = {
   API_ENDPOINTS,
   PAGINATION,
   LIMITS,
@@ -365,3 +365,5 @@ export default {
   MODAL_SIZES,
   ANIMATION_DURATIONS
 };
+
+export default ECHO_CONSTANTS;
