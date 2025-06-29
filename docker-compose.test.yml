@@ -1,0 +1,62 @@
+version: '3.8'
+
+services:
+  # Frontend pour les tests
+  frontend-test:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: echo-frontend-test
+    ports:
+      - "3004:3004"
+    environment:
+      - NODE_ENV=test
+      - NEXT_PUBLIC_API_URL=http://backend-test:3003
+    depends_on:
+      - backend-test
+    networks:
+      - echo-test-network
+
+  # Backend pour les tests
+  backend-test:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: echo-backend-test
+    ports:
+      - "3003:3003"
+    environment:
+      - NODE_ENV=test
+      - DATABASE_URL=postgresql://echo_test:test_password@postgres-test:5432/echo_test
+      - REDIS_URL=redis://redis-test:6379
+      - JWT_SECRET=test-secret
+      - JWT_REFRESH_SECRET=test-refresh-secret
+    depends_on:
+      - postgres-test
+      - redis-test
+    networks:
+      - echo-test-network
+
+  # Base de données de test
+  postgres-test:
+    image: postgres:15-alpine
+    container_name: echo-postgres-test
+    environment:
+      - POSTGRES_DB=echo_test
+      - POSTGRES_USER=echo_test
+      - POSTGRES_PASSWORD=test_password
+    volumes:
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    networks:
+      - echo-test-network
+
+  # Redis de test
+  redis-test:
+    image: redis:7-alpine
+    container_name: echo-redis-test
+    networks:
+      - echo-test-network
+
+networks:
+  echo-test-network:
+    driver: bridge

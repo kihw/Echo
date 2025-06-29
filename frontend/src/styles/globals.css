@@ -4,9 +4,35 @@
 
 /* Variables CSS personnalisées */
 :root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+  /* Mode clair */
+  --foreground: 15 23 42; /* slate-900 */
+  --background: 255 255 255; /* white */
+  
+  --muted: 248 250 252; /* slate-50 */
+  --muted-foreground: 100 116 139; /* slate-500 */
+  
+  --popover: 255 255 255; /* white */
+  --popover-foreground: 15 23 42; /* slate-900 */
+  
+  --card: 255 255 255; /* white */
+  --card-foreground: 15 23 42; /* slate-900 */
+  
+  --border: 226 232 240; /* slate-200 */
+  --input: 226 232 240; /* slate-200 */
+  
+  --primary: 59 130 246; /* blue-500 */
+  --primary-foreground: 255 255 255; /* white */
+  
+  --secondary: 241 245 249; /* slate-100 */
+  --secondary-foreground: 15 23 42; /* slate-900 */
+  
+  --accent: 241 245 249; /* slate-100 */
+  --accent-foreground: 15 23 42; /* slate-900 */
+  
+  --destructive: 239 68 68; /* red-500 */
+  --destructive-foreground: 255 255 255; /* white */
+  
+  --ring: 59 130 246; /* blue-500 */
 
   /* Couleurs sémantiques Echo */
   --echo-primary: 59, 130, 246;
@@ -27,26 +53,142 @@
   --topbar-height: 64px;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.dark {
+  /* Mode sombre */
+  --foreground: 248 250 252; /* slate-100 */
+  --background: 15 23 42; /* slate-900 */
+  
+  --muted: 30 41 59; /* slate-800 */
+  --muted-foreground: 148 163 184; /* slate-400 */
+  
+  --popover: 15 23 42; /* slate-900 */
+  --popover-foreground: 248 250 252; /* slate-100 */
+  
+  --card: 30 41 59; /* slate-800 */
+  --card-foreground: 248 250 252; /* slate-100 */
+  
+  --border: 51 65 85; /* slate-700 */
+  --input: 51 65 85; /* slate-700 */
+  
+  --primary: 96 165 250; /* blue-400 */
+  --primary-foreground: 15 23 42; /* slate-900 */
+  
+  --secondary: 51 65 85; /* slate-700 */
+  --secondary-foreground: 248 250 252; /* slate-100 */
+  
+  --accent: 51 65 85; /* slate-700 */
+  --accent-foreground: 248 250 252; /* slate-100 */
+  
+  --destructive: 248 113 113; /* red-400 */
+  --destructive-foreground: 15 23 42; /* slate-900 */
+  
+  --ring: 96 165 250; /* blue-400 */
 }
 
 /* Base styles */
+* {
+  border-color: rgb(var(--border));
+}
+
 html {
   scroll-behavior: smooth;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))) rgb(var(--background-start-rgb));
+  font-family: 'Inter', system-ui, sans-serif;
+  background-color: rgb(var(--background));
+  color: rgb(var(--foreground));
+  transition: background-color 0.3s ease, color 0.3s ease;
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
   overscroll-behavior: none;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Prévenir le flash de contenu non stylé */
+html.no-js body {
+  visibility: hidden;
+}
+
+html.js body {
+  visibility: visible;
+}
+
+/* Scrollbars personnalisées pour les thèmes */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: rgb(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--muted-foreground) / 0.3);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--muted-foreground) / 0.5);
+}
+
+.dark ::-webkit-scrollbar-track {
+  background: rgb(var(--muted));
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: rgb(var(--muted-foreground) / 0.3);
+}
+
+.dark ::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--muted-foreground) / 0.5);
+}
+
+/* Selection colors */
+::selection {
+  background-color: rgb(var(--primary) / 0.2);
+  color: rgb(var(--foreground));
+}
+
+::-moz-selection {
+  background-color: rgb(var(--primary) / 0.2);
+  color: rgb(var(--foreground));
+}
+
+/* Focus ring utilities */
+.focus-ring {
+  @apply focus:outline-none focus:ring-2 focus:ring-offset-2;
+  focus-visible:ring-primary-500 focus-visible:ring-offset-2;
+}
+
+.dark .focus-ring {
+  @apply focus-visible:ring-primary-400 focus-visible:ring-offset-slate-900;
+}
+
+/* Layout utilities pour éviter les problèmes de contraste */
+.theme-safe-text {
+  @apply text-slate-900 dark:text-slate-100;
+}
+
+.theme-safe-text-muted {
+  @apply text-slate-600 dark:text-slate-400;
+}
+
+.theme-safe-bg {
+  @apply bg-white dark:bg-slate-900;
+}
+
+.theme-safe-bg-secondary {
+  @apply bg-slate-50 dark:bg-slate-800;
+}
+
+.theme-safe-border {
+  @apply border-slate-200 dark:border-slate-700;
+}
+
+.theme-safe-hover {
+  @apply hover:bg-slate-100 dark:hover:bg-slate-800;
 }
 
 /* Scrollbar personnalisé */

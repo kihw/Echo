@@ -1,0 +1,220 @@
+version: '3.8'
+
+services:
+  # Reverse Proxy et Load Balancer
+  nginx:
+    image: nginx:alpine
+    container_name: echo-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/ssl/certs:ro
+      - ./logs/nginx:/var/log/nginx
+    depends_on:
+      - frontend
+      - backend
+    restart: unless-stopped
+    networks:
+      - echo-network
+
+  # Frontend Next.js
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.prod
+    container_name: echo-frontend
+    environment:
+      - NODE_ENV=production
+      - NEXT_PUBLIC_API_URL=https://api.echo-music.com
+    volumes:
+      - ./logs/frontend:/app/logs
+    restart: unless-stopped
+    networks:
+      - echo-network
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # Backend Node.js
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.prod
+    container_name: echo-backend
+    environment:
+      - NODE_ENV=production
+      - DATABASE_URL=postgresql://echo_user:${DB_PASSWORD}@postgres:5432/echo_production
+      - REDIS_URL=redis://redis:6379
+      - JWT_SECRET=${JWT_SECRET}
+      - JWT_REFRESH_SECRET=${JWT_REFRESH_SECRET}
+    volumes:
+      - ./logs/backend:/app/logs
+      - ./uploads:/app/uploads
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+    networks:
+      - echo-network
+    deploy:
+      replicas: 2
+      resources:
+        limits:
+          cpus: '1.0'
+          memory: 1G
+        reservations:
+          cpus: '0.5'
+          memory: 512M
+
+  # Base de données PostgreSQL
+  postgres:
+    image: postgres:15-alpine
+    container_name: echo-postgres
+    environment:
+      - POSTGRES_DB=echo_production
+      - POSTGRES_USER=echo_user
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+      - ./backups:/backups
+    ports:
+      - "5432:5432"
+    restart: unless-stopped
+    networks:
+      - echo-network
+    deploy:
+      resources:
+        limits:
+          cpus: '2.0'
+          memory: 2G
+        reservations:
+          cpus: '1.0'
+          memory: 1G
+
+  # Cache Redis
+  redis:
+    image: redis:7-alpine
+    container_name: echo-redis
+    command: redis-server --requirepass ${REDIS_PASSWORD} --appendonly yes
+    volumes:
+      - redis_data:/data
+      - ./redis/redis.conf:/etc/redis/redis.conf:ro
+    ports:
+      - "6379:6379"
+    restart: unless-stopped
+    networks:
+      - echo-network
+    deploy:
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+
+  # Monitoring avec Prometheus
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: echo-prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus_data:/prometheus
+    ports:
+      - "9090:9090"
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--web.console.libraries=/etc/prometheus/console_libraries'
+      - '--web.console.templates=/etc/prometheus/consoles'
+      - '--web.enable-lifecycle'
+    restart: unless-stopped
+    networks:
+      - echo-network
+
+  # Dashboards avec Grafana
+  grafana:
+    image: grafana/grafana:latest
+    container_name: echo-grafana
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD}
+    volumes:
+      - grafana_data:/var/lib/grafana
+      - ./monitoring/grafana/dashboards:/etc/grafana/provisioning/dashboards:ro
+      - ./monitoring/grafana/datasources:/etc/grafana/provisioning/datasources:ro
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+    restart: unless-stopped
+    networks:
+      - echo-network
+
+  # Collecteur de logs
+  fluentd:
+    image: fluent/fluentd:v1.16-1
+    container_name: echo-fluentd
+    volumes:
+      - ./logs:/fluentd/log
+      - ./monitoring/fluentd/fluent.conf:/etc/fluent/fluent.conf:ro
+    ports:
+      - "24224:24224"
+      - "24224:24224/udp"
+    restart: unless-stopped
+    networks:
+      - echo-network
+
+  # Sauvegarde automatique
+  backup:
+    image: alpine:latest
+    container_name: echo-backup
+    volumes:
+      - postgres_data:/data/postgres:ro
+      - redis_data:/data/redis:ro
+      - ./uploads:/data/uploads:ro
+      - ./backups:/backups
+    command: |
+      sh -c "
+        apk add --no-cache postgresql-client redis &&
+        while true; do
+          echo 'Starting backup...'
+          pg_dump -h postgres -U echo_user -d echo_production > /backups/postgres_\$(date +%Y%m%d_%H%M%S).sql
+          redis-cli -h redis --rdb /backups/redis_\$(date +%Y%m%d_%H%M%S).rdb
+          tar -czf /backups/uploads_\$(date +%Y%m%d_%H%M%S).tar.gz -C /data uploads/
+          find /backups -name '*.sql' -mtime +7 -delete
+          find /backups -name '*.rdb' -mtime +7 -delete
+          find /backups -name '*.tar.gz' -mtime +7 -delete
+          echo 'Backup completed. Sleeping for 24 hours...'
+          sleep 86400
+        done
+      "
+    depends_on:
+      - postgres
+      - redis
+    restart: unless-stopped
+    networks:
+      - echo-network
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+  prometheus_data:
+    driver: local
+  grafana_data:
+    driver: local
+
+networks:
+  echo-network:
+    driver: bridge

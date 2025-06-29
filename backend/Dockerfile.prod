@@ -1,0 +1,54 @@
+# Multi-stage Dockerfile pour le backend en production
+FROM node:18-alpine AS deps
+WORKDIR /app
+
+# Installer les dépendances
+COPY package*.json ./
+RUN npm ci --only=production && npm cache clean --force
+
+# Stage de build
+FROM node:18-alpine AS builder
+WORKDIR /app
+
+# Copier les dépendances et les sources
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+
+# Build si nécessaire (pour TypeScript ou autres transpilations)
+# RUN npm run build
+
+# Stage de production
+FROM node:18-alpine AS runner
+WORKDIR /app
+
+# Installer curl pour healthcheck
+RUN apk add --no-cache curl
+
+# Créer un utilisateur non-root
+RUN addgroup --system --gid 1001 nodejs
+RUN adduser --system --uid 1001 nodejs
+
+# Copier les fichiers de l'application
+COPY --from=deps /app/node_modules ./node_modules
+COPY --chown=nodejs:nodejs . .
+
+# Créer les dossiers nécessaires
+RUN mkdir -p /app/logs /app/uploads /app/temp
+RUN chown -R nodejs:nodejs /app/logs /app/uploads /app/temp
+
+# Variables d'environnement
+ENV NODE_ENV=production
+ENV PORT=3003
+
+# Exposer le port
+EXPOSE 3003
+
+# Utiliser l'utilisateur non-root
+USER nodejs
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD curl -f http://localhost:3003/api/health || exit 1
+
+# Commande de démarrage
+CMD ["node", "app.js"]

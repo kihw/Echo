@@ -2,6 +2,7 @@ import React from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Providers } from '@/components/providers/Providers';
+import { ThemeProvider } from '@/contexts/ThemeContext';
 import { PWAInstaller } from '@/components/pwa/PWAInstaller';
 import { Toaster } from 'react-hot-toast';
 import '@/styles/globals.css';
@@ -58,18 +59,20 @@ export const metadata: Metadata = {
     title: 'Echo Music Player',
     description: 'Lecteur de musique intelligent avec synchronisation multi-plateforme',
     images: ['/og-image.png']
-  },
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false
-  },
-  themeColor: [
-    { media: '(prefers-color-scheme: light)', color: '#3b82f6' },
-    { media: '(prefers-color-scheme: dark)', color: '#1e40af' }
-  ]
+  }
 };
+
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false
+};
+
+export const themeColor = [
+  { media: '(prefers-color-scheme: light)', color: '#3b82f6' },
+  { media: '(prefers-color-scheme: dark)', color: '#1e40af' }
+];
 
 export default function RootLayout({
   children
@@ -91,32 +94,33 @@ export default function RootLayout({
         <link rel="dns-prefetch" href={process.env.NEXT_PUBLIC_API_URL} />
       </head>
       <body className={`${inter.className} antialiased`} suppressHydrationWarning>
-        <Providers>
-          {children}
-          <PWAInstaller />
-          <Toaster
-            position="bottom-right"
-            toastOptions={{
-              duration: 4000,
-              className: 'text-sm',
-              style: {
-                background: '#363636',
-                color: '#fff'
-              },
-              success: {
+        <ThemeProvider defaultTheme="system">
+          <Providers>
+            {children}
+            <PWAInstaller />
+            <Toaster
+              position="bottom-right"
+              toastOptions={{
+                duration: 4000,
+                className: 'text-sm',
                 style: {
-                  background: '#10b981'
+                  background: '#363636',
+                  color: '#fff'
+                },
+                success: {
+                  style: {
+                    background: '#10b981'
+                  }
+                },
+                error: {
+                  style: {
+                    background: '#ef4444'
+                  }
                 }
-              },
-              error: {
-                style: {
-                  background: '#ef4444'
-                }
-              }
-            }}
-          />
-          <PWAInstaller />
-        </Providers>
+              }}
+            />
+          </Providers>
+        </ThemeProvider>
       </body>
     </html>
   );

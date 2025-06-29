@@ -33,6 +33,7 @@
         "passport-spotify": "^2.0.0",
         "pg": "^8.11.3",
         "pg-pool": "^3.6.1",
+        "redis": "^4.6.0",
         "spotify-web-api-node": "^5.0.2",
         "uuid": "^9.0.0",
         "winston": "^3.17.0",

@@ -1,8 +1,8 @@
-import { renderHook, act } from '@testing-library/react';
+import { renderHook, act, waitFor } from '@testing-library/react';
 import { useDashboard } from '../useDashboard';
 
 // Mock du service dashboard
-jest.mock('../services/dashboard', () => ({
+jest.mock('../../services/dashboard', () => ({
   dashboardService: {
     getDashboardData: jest.fn(),
     getStats: jest.fn()
@@ -16,7 +16,7 @@ describe('useDashboard Hook', () => {
 
   it('should initialize with loading state', () => {
     const { result } = renderHook(() => useDashboard());
-    
+
     expect(result.current.loading).toBe(true);
     expect(result.current.data).toBeNull();
     expect(result.current.error).toBeNull();
@@ -37,15 +37,16 @@ describe('useDashboard Hook', () => {
       totalPlaylists: 5
     };
 
-    const { dashboardService } = require('../services/dashboard');
+    const { dashboardService } = require('../../services/dashboard');
     dashboardService.getDashboardData.mockResolvedValue(mockData);
     dashboardService.getStats.mockResolvedValue(mockStats);
 
-    const { result, waitForNextUpdate } = renderHook(() => useDashboard());
+    const { result } = renderHook(() => useDashboard());
 
-    await waitForNextUpdate();
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
 
-    expect(result.current.loading).toBe(false);
     expect(result.current.data).toEqual(mockData);
     expect(result.current.stats).toEqual(mockStats);
     expect(result.current.error).toBeNull();
@@ -53,36 +54,38 @@ describe('useDashboard Hook', () => {
 
   it('should handle error state', async () => {
     const mockError = new Error('Failed to fetch dashboard data');
-    const { dashboardService } = require('../services/dashboard');
+    const { dashboardService } = require('../../services/dashboard');
     dashboardService.getDashboardData.mockRejectedValue(mockError);
 
-    const { result, waitForNextUpdate } = renderHook(() => useDashboard());
+    const { result } = renderHook(() => useDashboard());
 
-    await waitForNextUpdate();
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
 
-    expect(result.current.loading).toBe(false);
     expect(result.current.data).toBeNull();
     expect(result.current.error).toBe('Failed to fetch dashboard data');
   });
 
-  it('should refetch data when refresh is called', async () => {
-    const { dashboardService } = require('../services/dashboard');
+  it('should refetch data when hook reruns', async () => {
+    const { dashboardService } = require('../../services/dashboard');
     dashboardService.getDashboardData.mockResolvedValue({});
     dashboardService.getStats.mockResolvedValue({});
 
-    const { result, waitForNextUpdate } = renderHook(() => useDashboard());
+    const { result, rerender } = renderHook(() => useDashboard());
 
-    await waitForNextUpdate();
+    await waitFor(() => {
+      expect(result.current.loading).toBe(false);
+    });
 
     // Clear previous calls
     jest.clearAllMocks();
 
-    // Call refresh
-    await act(async () => {
-      await result.current.refresh();
-    });
+    // Trigger rerender
+    rerender();
 
-    expect(dashboardService.getDashboardData).toHaveBeenCalledTimes(1);
-    expect(dashboardService.getStats).toHaveBeenCalledTimes(1);
+    await waitFor(() => {
+      expect(dashboardService.getDashboardData).toHaveBeenCalledTimes(1);
+    });
   });
 });

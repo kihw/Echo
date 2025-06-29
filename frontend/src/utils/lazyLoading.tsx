@@ -1,7 +1,3 @@
-import { lazy, ComponentType } from 'react';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { Suspense } from 'react';
-
 import { lazy, ComponentType, Suspense } from 'react';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 

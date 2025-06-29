@@ -34,7 +34,7 @@ module.exports = {
     testTimeout: 30000,
 
     // Module path mapping
-    moduleNameMapping: {
+    moduleNameMapper: {
         '^@/(.*)$': '<rootDir>/$1',
         '^@backend/(.*)$': '<rootDir>/backend/$1',
         '^@tests/(.*)$': '<rootDir>/tests/$1'

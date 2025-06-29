@@ -28,6 +28,9 @@ const playlistGenerateRoute = require('./routes/playlist/generate');
 const playlistManageRoute = require('./routes/playlist/manage');
 const syncRoute = require('./routes/sync/import');
 const dashboardRoute = require('./routes/dashboard/stats');
+// Import des nouvelles routes
+const recommendationsRoute = require('./routes/recommendations');
+const unifiedSyncRoute = require('./routes/sync');
 
 const app = express();
 const PORT = process.env.PORT || 8000;
@@ -223,10 +226,17 @@ app.use('/api/playlists/generate', authMiddleware, playlistGenerateRoute);
 app.use('/api/playlists', authMiddleware, playlistManageRoute);
 
 // Routes API synchronisation
-app.use('/api/sync', authMiddleware, syncRoute);
+app.use('/api/sync', authMiddleware, unifiedSyncRoute);
+
+// Routes API recommandations
+app.use('/api/recommendations', authMiddleware, recommendationsRoute);
+app.use('/api/sync', authMiddleware, unifiedSyncRoute);
 
 // Routes API tableau de bord
 app.use('/api/dashboard', authMiddleware, dashboardRoute);
+
+// Routes API recommandations
+app.use('/api/recommendations', authMiddleware, recommendationsRoute);
 
 // Middleware de gestion d'erreur 404
 app.use('*', (req, res) => {

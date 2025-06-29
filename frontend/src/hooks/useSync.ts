@@ -1,54 +1,36 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { api } from '@/services/api';
+import { syncService, SyncOptions, SyncStatus as ServiceSyncStatus, SyncHistory, Conflict } from '../services/syncService';
 import { toast } from 'react-hot-toast';
 
-interface SyncStatus {
-  inProgress: boolean;
-  lastSyncTime?: string;
-  lastResults?: {
-    syncId: string;
-    status: string;
-    summary: {
-      totalPlaylists: number;
-      totalTracks: number;
-      totalArtists: number;
-      errors: number;
-    };
-    services: Record<string, any>;
-    duration?: number;
-  };
-}
+'use client';
 
-interface SyncHistoryItem {
-  id: string;
-  status: string;
-  startedAt: string;
-  completedAt?: string;
-  results?: any;
-}
+import { useState, useEffect, useCallback } from 'react';
+import { syncService, SyncOptions, SyncStatus, SyncHistory, Conflict } from '../services/syncService';
+import { toast } from 'react-hot-toast';
 
 interface UseSyncReturn {
   // Status
-  syncStatus: SyncStatus;
-  syncHistory: SyncHistoryItem[];
+  syncStatus: SyncStatus | null;
+  syncHistory: SyncHistory[];
   loading: boolean;
   error: string | null;
 
   // Actions
-  startFullSync: () => Promise<void>;
-  startServiceSync: (service: string) => Promise<void>;
+  startFullSync: (options?: SyncOptions) => Promise<void>;
+  startServiceSync: (service: string, options?: SyncOptions) => Promise<void>;
   refreshStatus: () => Promise<void>;
   refreshHistory: () => Promise<void>;
+  clearError: () => void;
 
   // Utils
   isSyncInProgress: boolean;
 }
 
 export function useSync(): UseSyncReturn {
-  const [syncStatus, setSyncStatus] = useState<SyncStatus>({ inProgress: false });
-  const [syncHistory, setSyncHistory] = useState<SyncHistoryItem[]>([]);
+  const [syncStatus, setSyncStatus] = useState<SyncStatus | null>(null);
+  const [syncHistory, setSyncHistory] = useState<SyncHistory[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -56,7 +38,7 @@ export function useSync(): UseSyncReturn {
   useEffect(() => {
     let pollInterval: NodeJS.Timeout;
 
-    if (syncStatus.inProgress) {
+    if (syncStatus?.inProgress) {
       pollInterval = setInterval(refreshStatus, 2000);
     }
 
@@ -65,7 +47,7 @@ export function useSync(): UseSyncReturn {
         clearInterval(pollInterval);
       }
     };
-  }, [syncStatus.inProgress]);
+  }, [syncStatus?.inProgress]);
 
   // Chargement initial
   useEffect(() => {
@@ -91,21 +73,21 @@ export function useSync(): UseSyncReturn {
 
   const refreshStatus = useCallback(async () => {
     try {
-      const response = await api.get('/sync/status');
-      setSyncStatus(response.data.status || { inProgress: false });
+      const status = await syncService.getStatus();
+      setSyncStatus(status);
       setError(null);
     } catch (err: any) {
       console.error('Erreur lors du refresh du statut:', err);
-      if (!syncStatus.inProgress) {
+      if (!syncStatus?.inProgress) {
         setError('Impossible de récupérer le statut de synchronisation');
       }
     }
-  }, [syncStatus.inProgress]);
+  }, [syncStatus?.inProgress]);
 
   const refreshHistory = useCallback(async () => {
     try {
-      const response = await api.get('/sync/history?limit=10');
-      setSyncHistory(response.data.history || []);
+      const history = await syncService.getHistory({ limit: 10 });
+      setSyncHistory(history);
       setError(null);
     } catch (err: any) {
       console.error('Erreur lors du refresh de l\'historique:', err);
@@ -113,82 +95,63 @@ export function useSync(): UseSyncReturn {
     }
   }, []);
 
-  const startFullSync = useCallback(async () => {
+  const startFullSync = useCallback(async (options?: SyncOptions) => {
     try {
-      if (syncStatus.inProgress) {
+      if (syncStatus?.inProgress) {
         toast.error('Une synchronisation est déjà en cours');
         return;
       }
 
-      setSyncStatus(prev => ({ ...prev, inProgress: true }));
+      setSyncStatus(prev => prev ? { ...prev, inProgress: true } : null);
       setError(null);
 
-      const response = await api.post('/sync/all');
+      const syncId = await syncService.startFullSync(options);
+      
+      toast.success('Synchronisation complète démarrée');
 
-      if (response.data.success) {
-        toast.success('Synchronisation complète démarrée');
-
-        // Commencer le polling du statut
-        setTimeout(refreshStatus, 1000);
-      } else {
-        throw new Error(response.data.message || 'Échec du démarrage de la synchronisation');
-      }
+      // Commencer le polling du statut
+      setTimeout(refreshStatus, 1000);
+      
     } catch (err: any) {
       console.error('Erreur lors du démarrage de la sync complète:', err);
 
-      const errorMessage = err.response?.data?.message || err.message || 'Erreur lors de la synchronisation';
+      const errorMessage = err.message || 'Erreur lors de la synchronisation';
       setError(errorMessage);
       toast.error(errorMessage);
 
-      setSyncStatus(prev => ({ ...prev, inProgress: false }));
+      setSyncStatus(prev => prev ? { ...prev, inProgress: false } : null);
     }
-  }, [syncStatus.inProgress, refreshStatus]);
+  }, [syncStatus?.inProgress, refreshStatus]);
 
-  const startServiceSync = useCallback(async (service: string) => {
+  const startServiceSync = useCallback(async (service: string, options?: SyncOptions) => {
     try {
-      if (syncStatus.inProgress) {
+      if (syncStatus?.inProgress) {
         toast.error('Une synchronisation est déjà en cours');
         return;
       }
 
       setError(null);
 
-      const response = await api.post(`/sync/${service}`);
+      const syncId = await syncService.startServiceSync(service, options);
+      
+      toast.success(`Synchronisation ${service} démarrée`);
 
-      if (response.data.success) {
-        toast.success(`Synchronisation ${service} démarrée`);
-
-        // Refresh du statut pour voir le changement
-        setTimeout(refreshStatus, 1000);
-        setTimeout(refreshHistory, 2000);
-      } else {
-        throw new Error(response.data.message || `Échec de la synchronisation ${service}`);
-      }
+      // Refresh du statut pour voir le changement
+      setTimeout(refreshStatus, 1000);
+      setTimeout(refreshHistory, 2000);
+      
     } catch (err: any) {
       console.error(`Erreur lors de la sync ${service}:`, err);
 
-      const errorMessage = err.response?.data?.message || err.message || `Erreur lors de la synchronisation ${service}`;
+      const errorMessage = err.message || `Erreur lors de la synchronisation ${service}`;
       setError(errorMessage);
       toast.error(errorMessage);
     }
-  }, [syncStatus.inProgress, refreshStatus, refreshHistory]);
+  }, [syncStatus?.inProgress, refreshStatus, refreshHistory]);
 
-  // Gestion des erreurs de connexion
-  const handleApiError = (err: any, context: string) => {
-    console.error(`Erreur ${context}:`, err);
-
-    if (err.response?.status === 401) {
-      setError('Session expirée, veuillez vous reconnecter');
-    } else if (err.response?.status === 403) {
-      setError('Accès refusé');
-    } else if (err.response?.status >= 500) {
-      setError('Erreur du serveur, veuillez réessayer plus tard');
-    } else if (err.code === 'NETWORK_ERROR') {
-      setError('Erreur de connexion réseau');
-    } else {
-      setError(err.response?.data?.message || err.message || `Erreur ${context}`);
-    }
-  };
+  const clearError = useCallback(() => {
+    setError(null);
+  }, []);
 
   return {
     // Status
@@ -202,9 +165,10 @@ export function useSync(): UseSyncReturn {
     startServiceSync,
     refreshStatus,
     refreshHistory,
+    clearError,
 
     // Utils
-    isSyncInProgress: syncStatus.inProgress
+    isSyncInProgress: syncStatus?.inProgress || false
   };
 }
 
