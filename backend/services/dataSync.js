@@ -665,6 +665,19 @@ class DataSyncService {
             throw error;
         }
     }
+
+    /**
+     * Obtenir le statut actuel de la synchronisation
+     * @returns {Object} Statut de la synchronisation
+     */
+    getSyncStatus() {
+        return {
+            isRunning: this.syncInProgress,
+            lastSyncTime: this.lastSyncTime ? this.lastSyncTime.toISOString() : null,
+            lastResults: this.syncResults || null,
+            nextSyncAllowed: !this.syncInProgress
+        };
+    }
 }
 
 module.exports = new DataSyncService();

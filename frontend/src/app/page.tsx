@@ -4,17 +4,22 @@ import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Music, Shuffle, Heart, TrendingUp, Clock, Zap } from 'lucide-react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { ResponsiveDashboardLayout } from '@/components/layout/ResponsiveDashboardLayout';
 import { WelcomeHero } from '@/components/home/WelcomeHero';
 import { QuickActions } from '@/components/home/QuickActions';
 import { RecentPlaylists } from '@/components/home/RecentPlaylists';
 import { ListeningStats } from '@/components/home/ListeningStats';
 import { RecommendedTracks } from '@/components/home/RecommendedTracks';
+import { TopTracks } from '@/components/home/TopTracks';
+import { TopArtists } from '@/components/home/TopArtists';
 import { useAuth } from '@/hooks/useAuth';
 import { usePlayer } from '@/hooks/usePlayer';
+import { useDashboard } from '@/hooks/useDashboard';
 
 export default function HomePage() {
   const { user, isAuthenticated } = useAuth();
   const { currentTrack, isPlaying } = usePlayer();
+  const { data: dashboardData, stats, loading: dashboardLoading, error } = useDashboard();
   const [currentTime, setCurrentTime] = useState('');
 
   useEffect(() => {
@@ -64,7 +69,7 @@ export default function HomePage() {
   }
 
   return (
-    <DashboardLayout>
+    <ResponsiveDashboardLayout>
       <motion.div
         className="max-w-7xl mx-auto space-y-8"
         variants={containerVariants}
@@ -116,7 +121,15 @@ export default function HomePage() {
           <div className="lg:col-span-2 space-y-8">
             {/* Playlists récentes */}
             <motion.div variants={itemVariants}>
-              <RecentPlaylists />
+              <RecentPlaylists playlists={dashboardData?.recentPlaylists} loading={dashboardLoading} />
+            </motion.div>
+
+            {/* Top Tracks et Top Artists */}
+            <motion.div variants={itemVariants}>
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <TopTracks tracks={dashboardData?.topTracks} loading={dashboardLoading} />
+                <TopArtists artists={dashboardData?.topArtists} loading={dashboardLoading} />
+              </div>
             </motion.div>
 
             {/* Tracks recommandées */}
@@ -129,7 +142,7 @@ export default function HomePage() {
           <div className="space-y-8">
             {/* Statistiques d'écoute */}
             <motion.div variants={itemVariants}>
-              <ListeningStats />
+              <ListeningStats stats={stats} loading={dashboardLoading} />
             </motion.div>
 
             {/* Carte découverte */}
@@ -164,7 +177,21 @@ export default function HomePage() {
                   </h3>
                 </div>
                 <div className="card-body space-y-4">
-                  {[
+                  {dashboardData?.listeningHistory?.slice(0, 3).map((activity, index) => (
+                    <div key={activity.id} className="flex items-center space-x-3">
+                      <div className="p-2 bg-secondary-100 rounded-lg">
+                        <Music className="w-4 h-4 text-secondary-600" />
+                      </div>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-secondary-900 truncate">
+                          {activity.trackName}
+                        </p>
+                        <p className="text-xs text-secondary-500">
+                          {activity.artistName} • {new Date(activity.playedAt).toLocaleDateString('fr-FR')}
+                        </p>
+                      </div>
+                    </div>
+                  )) || [
                     {
                       action: 'Playlist créée',
                       title: 'Chill Vibes',
@@ -198,6 +225,11 @@ export default function HomePage() {
                       </div>
                     </div>
                   ))}
+                  {(!dashboardData?.listeningHistory || dashboardData.listeningHistory.length === 0) && !dashboardLoading && (
+                    <div className="text-center py-4">
+                      <p className="text-sm text-gray-500">Aucune activité récente</p>
+                    </div>
+                  )}
                 </div>
               </div>
             </motion.div>
@@ -248,7 +280,7 @@ export default function HomePage() {
                       <div className={`p-2 rounded-lg ${suggestion.color === 'primary' ? 'bg-primary-100 text-primary-600' :
                         suggestion.color === 'spotify' ? 'bg-green-100 text-green-600' :
                           'bg-accent-100 text-accent-600'
-                      }`}>
+                        }`}>
                         <suggestion.icon className="w-5 h-5" />
                       </div>
                       <div className="flex-1">
@@ -261,7 +293,7 @@ export default function HomePage() {
                         <button className={`text-sm font-medium ${suggestion.color === 'primary' ? 'text-primary-600 hover:text-primary-700' :
                           suggestion.color === 'spotify' ? 'text-green-600 hover:text-green-700' :
                             'text-accent-600 hover:text-accent-700'
-                        } transition-colors`}>
+                          } transition-colors`}>
                           {suggestion.action} →
                         </button>
                       </div>
@@ -273,6 +305,6 @@ export default function HomePage() {
           </div>
         </motion.div>
       </motion.div>
-    </DashboardLayout>
+    </ResponsiveDashboardLayout>
   );
 }

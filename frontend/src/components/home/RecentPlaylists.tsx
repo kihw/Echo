@@ -2,229 +2,158 @@
 
 import { motion } from 'framer-motion';
 import { Play, MoreHorizontal, Music, Clock, Heart } from 'lucide-react';
-import { useState } from 'react';
+import { RecentPlaylist } from '@/services/dashboard';
 
-interface Playlist {
-  id: string;
-  name: string;
-  description: string;
-  trackCount: number;
-  duration: number;
-  artwork?: string;
-  lastPlayed?: string;
-  isLiked?: boolean;
+interface RecentPlaylistsProps {
+  playlists?: RecentPlaylist[];
+  loading?: boolean;
 }
 
-export function RecentPlaylists() {
-  const [playlists] = useState<Playlist[]>([
-    {
-      id: '1',
-      name: 'Mes Favoris',
-      description: 'Vos titres préférés en un seul endroit',
-      trackCount: 47,
-      duration: 180, // minutes
-      lastPlayed: '2024-06-28T10:30:00Z',
-      isLiked: true
-    },
-    {
-      id: '2',
-      name: 'Découvertes de la semaine',
-      description: 'Nouvelles trouvailles musicales',
-      trackCount: 23,
-      duration: 95,
-      lastPlayed: '2024-06-28T08:15:00Z'
-    },
-    {
-      id: '3',
-      name: 'Chill Vibes',
-      description: 'Pour se détendre après une longue journée',
-      trackCount: 31,
-      duration: 125,
-      lastPlayed: '2024-06-27T22:45:00Z'
-    },
-    {
-      id: '4',
-      name: 'Workout Mix',
-      description: 'Motivation musicale pour le sport',
-      trackCount: 18,
-      duration: 75,
-      lastPlayed: '2024-06-27T07:00:00Z'
-    }
-  ]);
-
-  const formatDuration = (minutes: number) => {
+export function RecentPlaylists({ playlists = [], loading = false }: RecentPlaylistsProps) {
+  const formatDuration = (milliseconds: number) => {
+    const minutes = Math.floor(milliseconds / (1000 * 60));
     const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return hours > 0 ? `${hours}h ${mins}min` : `${mins}min`;
+    const remainingMinutes = minutes % 60;
+    return hours > 0 ? `${hours}h ${remainingMinutes}min` : `${minutes}min`;
   };
 
-  const formatLastPlayed = (dateString: string) => {
-    const date = new Date(dateString);
+  const formatLastUpdate = (updatedAt: string) => {
+    const date = new Date(updatedAt);
     const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-    const diffDays = Math.floor(diffHours / 24);
+    const diffHours = Math.floor((now.getTime() - date.getTime()) / (1000 * 60 * 60));
 
-    if (diffHours < 1) return 'À l\'instant';
     if (diffHours < 24) return `Il y a ${diffHours}h`;
-    if (diffDays === 1) return 'Hier';
-    return `Il y a ${diffDays} jours`;
+    const diffDays = Math.floor(diffHours / 24);
+    return `Il y a ${diffDays} jour(s)`;
   };
 
-  const handlePlayPlaylist = (playlist: Playlist) => {
-    console.log('Playing playlist:', playlist.name);
-    // Implement playlist play logic
-  };
+  if (loading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+      >
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Playlists récentes</h3>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {[...Array(6)].map((_, i) => (
+            <div key={i} className="p-4 bg-gray-50 rounded-lg animate-pulse">
+              <div className="w-full h-32 bg-gray-200 rounded-lg mb-3"></div>
+              <div className="w-3/4 h-4 bg-gray-200 rounded mb-2"></div>
+              <div className="w-1/2 h-3 bg-gray-200 rounded"></div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+    );
+  }
 
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
-    }
-  };
+  if (playlists.length === 0) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+      >
+        <h3 className="text-lg font-semibold text-gray-900 mb-4">Playlists récentes</h3>
+        <div className="text-center py-8">
+          <Music className="w-12 h-12 text-gray-400 mx-auto mb-4" />
+          <p className="text-gray-500">Aucune playlist trouvée</p>
+          <p className="text-sm text-gray-400">Créez votre première playlist pour commencer</p>
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-secondary-900">
-          Playlists récentes
-        </h2>
-        <button className="text-sm text-primary-600 hover:text-primary-700 font-medium">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+    >
+      <div className="flex items-center justify-between mb-6">
+        <h3 className="text-lg font-semibold text-gray-900">Playlists récentes</h3>
+        <button className="text-sm text-blue-600 hover:text-blue-700 font-medium">
           Voir tout
         </button>
       </div>
 
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="grid grid-cols-1 md:grid-cols-2 gap-4"
-      >
-        {playlists.map((playlist) => (
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {playlists.slice(0, 6).map((playlist, index) => (
           <motion.div
             key={playlist.id}
-            variants={itemVariants}
-            className="group bg-white rounded-xl border border-secondary-200 hover:border-primary-300 hover:shadow-lg transition-all duration-300 overflow-hidden"
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: index * 0.1 }}
+            whileHover={{ scale: 1.02 }}
+            className="group cursor-pointer"
           >
-            <div className="p-6">
-              <div className="flex items-start space-x-4">
-                {/* Playlist Artwork */}
-                <div className="relative flex-shrink-0">
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary-100 to-primary-200 rounded-lg flex items-center justify-center">
-                    {playlist.artwork ? (
-                      <img
-                        src={playlist.artwork}
-                        alt={playlist.name}
-                        className="w-full h-full object-cover rounded-lg"
-                      />
-                    ) : (
-                      <Music className="w-8 h-8 text-primary-600" />
-                    )}
+            <div className="relative p-4 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg transition-all duration-300 hover:shadow-md">
+              {/* Cover Image Placeholder */}
+              <div className="relative w-full h-32 bg-gradient-to-br from-blue-100 to-purple-100 rounded-lg mb-3 overflow-hidden">
+                {playlist.coverImageUrl ? (
+                  <img
+                    src={playlist.coverImageUrl}
+                    alt={playlist.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="flex items-center justify-center h-full">
+                    <Music className="w-8 h-8 text-blue-600" />
                   </div>
+                )}
 
-                  {/* Play Button Overlay */}
-                  <button
-                    onClick={() => handlePlayPlaylist(playlist)}
-                    className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 rounded-lg flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300"
+                {/* Play Button Overlay */}
+                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-30 transition-all duration-300 flex items-center justify-center">
+                  <motion.button
+                    initial={{ scale: 0, opacity: 0 }}
+                    whileHover={{ scale: 1, opacity: 1 }}
+                    className="p-3 bg-white rounded-full shadow-lg opacity-0 group-hover:opacity-100 transition-all duration-300"
                   >
-                    <div className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-lg transform scale-0 group-hover:scale-100 transition-transform duration-300">
-                      <Play className="w-4 h-4 text-secondary-900 ml-0.5" />
-                    </div>
-                  </button>
-                </div>
-
-                {/* Playlist Info */}
-                <div className="flex-1 min-w-0">
-                  <div className="flex items-start justify-between">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-semibold text-secondary-900 truncate flex items-center space-x-2">
-                        <span>{playlist.name}</span>
-                        {playlist.isLiked && (
-                          <Heart className="w-4 h-4 text-red-500 fill-current" />
-                        )}
-                      </h3>
-                      <p className="text-sm text-secondary-600 mt-1 line-clamp-2">
-                        {playlist.description}
-                      </p>
-                    </div>
-
-                    <button className="p-1 rounded-lg hover:bg-secondary-100 opacity-0 group-hover:opacity-100 transition-opacity">
-                      <MoreHorizontal className="w-4 h-4 text-secondary-500" />
-                    </button>
-                  </div>
-
-                  {/* Playlist Stats */}
-                  <div className="flex items-center space-x-4 mt-3 text-xs text-secondary-500">
-                    <div className="flex items-center space-x-1">
-                      <Music className="w-3 h-3" />
-                      <span>{playlist.trackCount} titres</span>
-                    </div>
-                    <div className="flex items-center space-x-1">
-                      <Clock className="w-3 h-3" />
-                      <span>{formatDuration(playlist.duration)}</span>
-                    </div>
-                    {playlist.lastPlayed && (
-                      <div className="flex items-center space-x-1">
-                        <div className="w-1 h-1 bg-secondary-400 rounded-full"></div>
-                        <span>{formatLastPlayed(playlist.lastPlayed)}</span>
-                      </div>
-                    )}
-                  </div>
+                    <Play className="w-6 h-6 text-gray-900 fill-current" />
+                  </motion.button>
                 </div>
               </div>
 
-              {/* Progress Bar for Recently Played */}
-              {playlist.lastPlayed && (
-                <div className="mt-4">
-                  <div className="w-full h-1 bg-secondary-100 rounded-full overflow-hidden">
-                    <div
-                      className="h-full bg-primary-500 rounded-full transition-all duration-300"
-                      style={{ width: `${Math.random() * 60 + 20}%` }}
-                    />
+              {/* Playlist Info */}
+              <div className="space-y-2">
+                <h4 className="font-semibold text-gray-900 truncate">{playlist.name}</h4>
+                {playlist.description && (
+                  <p className="text-sm text-gray-600 line-clamp-2">{playlist.description}</p>
+                )}
+
+                <div className="flex items-center justify-between text-xs text-gray-500">
+                  <div className="flex items-center space-x-3">
+                    <span className="flex items-center">
+                      <Music className="w-3 h-3 mr-1" />
+                      {playlist.trackCount}
+                    </span>
+                    <span className="flex items-center">
+                      <Clock className="w-3 h-3 mr-1" />
+                      {formatDuration(playlist.totalDuration)}
+                    </span>
                   </div>
-                  <div className="flex justify-between text-xs text-secondary-500 mt-1">
-                    <span>Écouté récemment</span>
-                    <span>{Math.floor(Math.random() * 80 + 10)}% terminé</span>
-                  </div>
+
+                  {playlist.isPublic && (
+                    <span className="px-2 py-1 bg-green-100 text-green-700 rounded-full text-xs">
+                      Public
+                    </span>
+                  )}
                 </div>
-              )}
+
+                <div className="text-xs text-gray-400">
+                  Mis à jour {formatLastUpdate(playlist.updatedAt)}
+                </div>
+              </div>
+
+              {/* More Options */}
+              <button className="absolute top-2 right-2 p-1 opacity-0 group-hover:opacity-100 transition-opacity duration-300 hover:bg-white hover:bg-opacity-80 rounded">
+                <MoreHorizontal className="w-4 h-4 text-gray-600" />
+              </button>
             </div>
           </motion.div>
         ))}
-      </motion.div>
-
-      {/* Create New Playlist Button */}
-      <motion.button
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ delay: 0.5, duration: 0.5 }}
-        className="w-full p-6 border-2 border-dashed border-secondary-300 rounded-xl hover:border-primary-400 hover:bg-primary-50 transition-all duration-300 group"
-      >
-        <div className="flex items-center justify-center space-x-3 text-secondary-600 group-hover:text-primary-600">
-          <div className="w-12 h-12 bg-secondary-100 group-hover:bg-primary-100 rounded-lg flex items-center justify-center transition-colors">
-            <Play className="w-6 h-6" />
-          </div>
-          <div className="text-left">
-            <div className="font-medium">Créer une nouvelle playlist</div>
-            <div className="text-sm opacity-70">Commencez avec vos titres préférés</div>
-          </div>
-        </div>
-      </motion.button>
-    </div>
+      </div>
+    </motion.div>
   );
 }

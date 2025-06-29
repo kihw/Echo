@@ -2,6 +2,7 @@ import React from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Providers } from '@/components/providers/Providers';
+import { PWAInstaller } from '@/components/pwa/PWAInstaller';
 import { Toaster } from 'react-hot-toast';
 import '@/styles/globals.css';
 
@@ -92,6 +93,7 @@ export default function RootLayout({
       <body className={`${inter.className} antialiased`} suppressHydrationWarning>
         <Providers>
           {children}
+          <PWAInstaller />
           <Toaster
             position="bottom-right"
             toastOptions={{
@@ -113,6 +115,7 @@ export default function RootLayout({
               }
             }}
           />
+          <PWAInstaller />
         </Providers>
       </body>
     </html>

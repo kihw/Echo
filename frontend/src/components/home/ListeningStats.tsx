@@ -1,32 +1,16 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { TrendingUp, Clock, Music, Headphones, Calendar, Award } from 'lucide-react';
+import { TrendingUp, Clock, Music, Headphones, Award } from 'lucide-react';
 import { useState, useEffect } from 'react';
+import { DashboardStats } from '@/services/dashboard';
 
-interface Stats {
-  totalListeningTime: number; // minutes
-  tracksPlayed: number;
-  favoriteGenre: string;
-  topArtist: string;
-  weeklyGoal: number; // minutes
-  weeklyProgress: number; // minutes
-  streak: number; // days
-  monthlyRank: number;
+interface ListeningStatsProps {
+  stats?: DashboardStats | null;
+  loading?: boolean;
 }
 
-export function ListeningStats() {
-  const [stats] = useState<Stats>({
-    totalListeningTime: 1247, // minutes this week
-    tracksPlayed: 156,
-    favoriteGenre: 'Indie Rock',
-    topArtist: 'Arctic Monkeys',
-    weeklyGoal: 1800, // 30 hours
-    weeklyProgress: 1247,
-    streak: 12,
-    monthlyRank: 3
-  });
-
+export function ListeningStats({ stats, loading = false }: ListeningStatsProps) {
   const [timeOfDay, setTimeOfDay] = useState('');
 
   useEffect(() => {
@@ -36,240 +20,121 @@ export function ListeningStats() {
     else setTimeOfDay('soir');
   }, []);
 
-  const formatTime = (minutes: number) => {
+  const formatTime = (milliseconds: number) => {
+    if (!milliseconds) return '0min';
+    const minutes = Math.floor(milliseconds / (1000 * 60));
     const hours = Math.floor(minutes / 60);
-    const mins = minutes % 60;
-    return hours > 0 ? `${hours}h ${mins}min` : `${mins}min`;
+    const remainingMinutes = minutes % 60;
+    return hours > 0 ? `${hours}h ${remainingMinutes}min` : `${minutes}min`;
   };
 
-  const getProgressPercentage = () => {
-    return Math.min((stats.weeklyProgress / stats.weeklyGoal) * 100, 100);
+  const formatLastSync = (lastSyncTime?: string) => {
+    if (!lastSyncTime) return 'Jamais synchronisé';
+    const syncDate = new Date(lastSyncTime);
+    const now = new Date();
+    const diffMinutes = Math.floor((now.getTime() - syncDate.getTime()) / (1000 * 60));
+
+    if (diffMinutes < 60) return `Il y a ${diffMinutes} min`;
+    if (diffMinutes < 1440) return `Il y a ${Math.floor(diffMinutes / 60)}h`;
+    return `Il y a ${Math.floor(diffMinutes / 1440)} jour(s)`;
   };
 
-  const getStreakMessage = () => {
-    if (stats.streak >= 30) return 'Incroyable ! 🔥';
-    if (stats.streak >= 14) return 'Excellent ! 🎵';
-    if (stats.streak >= 7) return 'Bien joué ! ⭐';
-    return 'Continue ! 💪';
-  };
-
-  const containerVariants = {
-    hidden: { opacity: 0 },
-    visible: {
-      opacity: 1,
-      transition: {
-        staggerChildren: 0.1
-      }
-    }
-  };
-
-  const itemVariants = {
-    hidden: { y: 20, opacity: 0 },
-    visible: {
-      y: 0,
-      opacity: 1,
-      transition: {
-        duration: 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94]
-      }
-    }
-  };
+  if (loading) {
+    return (
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+      >
+        <div className="flex items-center justify-between mb-6">
+          <h3 className="text-lg font-semibold text-gray-900">Statistiques d'écoute</h3>
+          <div className="w-6 h-6 bg-gray-200 rounded animate-pulse"></div>
+        </div>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {[...Array(4)].map((_, i) => (
+            <div key={i} className="p-4 bg-gray-50 rounded-lg animate-pulse">
+              <div className="w-8 h-8 bg-gray-200 rounded mb-2"></div>
+              <div className="w-16 h-4 bg-gray-200 rounded mb-1"></div>
+              <div className="w-12 h-3 bg-gray-200 rounded"></div>
+            </div>
+          ))}
+        </div>
+      </motion.div>
+    );
+  }
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-xl font-semibold text-secondary-900">
-          Vos statistiques
-        </h2>
-        <button className="text-sm text-primary-600 hover:text-primary-700 font-medium">
-          Voir tout
-        </button>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      className="bg-white rounded-xl shadow-sm border border-gray-100 p-6"
+    >
+      <div className="flex items-center justify-between mb-6">
+        <div>
+          <h3 className="text-lg font-semibold text-gray-900">Statistiques d'écoute</h3>
+          <p className="text-sm text-gray-500">Bonne écoute ce {timeOfDay} ! 🎵</p>
+        </div>
+        <div className="p-2 bg-blue-50 rounded-lg">
+          <TrendingUp className="w-6 h-6 text-blue-600" />
+        </div>
       </div>
 
-      <motion.div
-        variants={containerVariants}
-        initial="hidden"
-        animate="visible"
-        className="space-y-4"
-      >
-        {/* Weekly Goal Progress */}
-        <motion.div variants={itemVariants} className="card bg-gradient-to-br from-primary-500 to-primary-600 text-white">
-          <div className="card-body">
-            <div className="flex items-center justify-between mb-4">
-              <div>
-                <h3 className="text-lg font-semibold">Objectif hebdomadaire</h3>
-                <p className="text-primary-100 text-sm">
-                  Bon {timeOfDay} ! Vous progressez bien 🎯
-                </p>
-              </div>
-              <div className="w-12 h-12 bg-primary-400 rounded-xl flex items-center justify-center">
-                <TrendingUp className="w-6 h-6" />
-              </div>
-            </div>
-
-            <div className="space-y-3">
-              <div className="flex justify-between text-sm">
-                <span className="text-primary-100">Progression</span>
-                <span className="font-medium">
-                  {formatTime(stats.weeklyProgress)} / {formatTime(stats.weeklyGoal)}
-                </span>
-              </div>
-
-              <div className="w-full h-2 bg-primary-400 rounded-full overflow-hidden">
-                <motion.div
-                  initial={{ width: 0 }}
-                  animate={{ width: `${getProgressPercentage()}%` }}
-                  transition={{ duration: 1, delay: 0.5 }}
-                  className="h-full bg-white rounded-full"
-                />
-              </div>
-
-              <div className="text-right text-primary-100 text-sm">
-                {getProgressPercentage().toFixed(0)}% terminé
-              </div>
-            </div>
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+        <div className="p-4 bg-gradient-to-br from-blue-50 to-blue-100 rounded-lg">
+          <div className="flex items-center justify-between mb-2">
+            <Clock className="w-5 h-5 text-blue-600" />
+            <span className="text-xs text-blue-600 font-medium">TEMPS</span>
           </div>
-        </motion.div>
-
-        {/* Stats Grid */}
-        <div className="grid grid-cols-2 gap-4">
-          <motion.div variants={itemVariants} className="card">
-            <div className="card-body">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-accent-100 rounded-lg flex items-center justify-center">
-                  <Headphones className="w-5 h-5 text-accent-600" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-secondary-900">
-                    {formatTime(stats.totalListeningTime)}
-                  </div>
-                  <div className="text-sm text-secondary-600">Cette semaine</div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div variants={itemVariants} className="card">
-            <div className="card-body">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
-                  <Music className="w-5 h-5 text-green-600" />
-                </div>
-                <div>
-                  <div className="text-2xl font-bold text-secondary-900">
-                    {stats.tracksPlayed}
-                  </div>
-                  <div className="text-sm text-secondary-600">Titres écoutés</div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+          <div className="text-2xl font-bold text-blue-900">
+            {formatTime(stats?.totalListeningTime || 0)}
+          </div>
+          <div className="text-xs text-blue-700">Total d'écoute</div>
         </div>
 
-        {/* Favorite Genre & Artist */}
-        <motion.div variants={itemVariants} className="card">
-          <div className="card-body">
-            <h3 className="font-semibold text-secondary-900 mb-4">Vos préférences</h3>
-            <div className="space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                    <Music className="w-4 h-4 text-purple-600" />
-                  </div>
-                  <div>
-                    <div className="text-sm font-medium text-secondary-900">Genre favori</div>
-                    <div className="text-sm text-secondary-600">{stats.favoriteGenre}</div>
-                  </div>
-                </div>
-                <div className="text-primary-600 text-sm font-medium">67%</div>
-              </div>
-
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-3">
-                  <div className="w-8 h-8 bg-orange-100 rounded-lg flex items-center justify-center">
-                    <Award className="w-4 h-4 text-orange-600" />
-                  </div>
-                  <div>
-                    <div className="text-sm font-medium text-secondary-900">Artiste top</div>
-                    <div className="text-sm text-secondary-600">{stats.topArtist}</div>
-                  </div>
-                </div>
-                <div className="text-primary-600 text-sm font-medium">23 écoutes</div>
-              </div>
-            </div>
+        <div className="p-4 bg-gradient-to-br from-green-50 to-green-100 rounded-lg">
+          <div className="flex items-center justify-between mb-2">
+            <Music className="w-5 h-5 text-green-600" />
+            <span className="text-xs text-green-600 font-medium">MORCEAUX</span>
           </div>
-        </motion.div>
-
-        {/* Streak & Rank */}
-        <div className="grid grid-cols-2 gap-4">
-          <motion.div variants={itemVariants} className="card">
-            <div className="card-body">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <Calendar className="w-5 h-5 text-yellow-600" />
-                </div>
-                <div>
-                  <div className="text-xl font-bold text-secondary-900">
-                    {stats.streak} jours
-                  </div>
-                  <div className="text-xs text-secondary-600">
-                    {getStreakMessage()}
-                  </div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
-
-          <motion.div variants={itemVariants} className="card">
-            <div className="card-body">
-              <div className="flex items-center space-x-3">
-                <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <Award className="w-5 h-5 text-blue-600" />
-                </div>
-                <div>
-                  <div className="text-xl font-bold text-secondary-900">
-                    #{stats.monthlyRank}
-                  </div>
-                  <div className="text-xs text-secondary-600">Ce mois-ci</div>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+          <div className="text-2xl font-bold text-green-900">
+            {stats?.totalTracks || 0}
+          </div>
+          <div className="text-xs text-green-700">Pistes écoutées</div>
         </div>
 
-        {/* Listening Timeline */}
-        <motion.div variants={itemVariants} className="card">
-          <div className="card-body">
-            <h3 className="font-semibold text-secondary-900 mb-4 flex items-center">
-              <Clock className="w-5 h-5 mr-2 text-secondary-500" />
-              Votre rythme d'écoute
-            </h3>
-
-            <div className="space-y-3">
-              {[
-                { time: 'Matin (6h-12h)', percentage: 25, color: 'bg-yellow-400' },
-                { time: 'Après-midi (12h-18h)', percentage: 45, color: 'bg-blue-400' },
-                { time: 'Soirée (18h-24h)', percentage: 30, color: 'bg-purple-400' }
-              ].map((period, index) => (
-                <div key={index} className="space-y-2">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-secondary-700">{period.time}</span>
-                    <span className="font-medium text-secondary-900">{period.percentage}%</span>
-                  </div>
-                  <div className="w-full h-2 bg-secondary-100 rounded-full overflow-hidden">
-                    <motion.div
-                      initial={{ width: 0 }}
-                      animate={{ width: `${period.percentage}%` }}
-                      transition={{ duration: 1, delay: 0.2 * index }}
-                      className={`h-full ${period.color} rounded-full`}
-                    />
-                  </div>
-                </div>
-              ))}
-            </div>
+        <div className="p-4 bg-gradient-to-br from-purple-50 to-purple-100 rounded-lg">
+          <div className="flex items-center justify-between mb-2">
+            <Headphones className="w-5 h-5 text-purple-600" />
+            <span className="text-xs text-purple-600 font-medium">ARTISTES</span>
           </div>
-        </motion.div>
-      </motion.div>
-    </div>
+          <div className="text-2xl font-bold text-purple-900">
+            {stats?.totalArtists || 0}
+          </div>
+          <div className="text-xs text-purple-700">Artistes uniques</div>
+        </div>
+
+        <div className="p-4 bg-gradient-to-br from-orange-50 to-orange-100 rounded-lg">
+          <div className="flex items-center justify-between mb-2">
+            <Award className="w-5 h-5 text-orange-600" />
+            <span className="text-xs text-orange-600 font-medium">SERVICES</span>
+          </div>
+          <div className="text-2xl font-bold text-orange-900">
+            {stats?.syncedServices || 0}
+          </div>
+          <div className="text-xs text-orange-700">Connectés</div>
+        </div>
+      </div>
+
+      {stats?.lastSyncTime && (
+        <div className="border-t border-gray-100 pt-4">
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-gray-500">Dernière synchronisation</span>
+            <span className="text-gray-700 font-medium">
+              {formatLastSync(stats.lastSyncTime)}
+            </span>
+          </div>
+        </div>
+      )}
+    </motion.div>
   );
 }

@@ -59,15 +59,64 @@ const authMiddleware = async (req, res, next) => {
             });
         }
 
-        // Récupération des informations utilisateur depuis la base de données
-        const user = await db.findById('users', decoded.userId);
+        let user;
+
+        // En mode développement, vérifier les utilisateurs de test
+        if (process.env.NODE_ENV === 'development') {
+            const TEST_USERS = [
+                {
+                    id: '550e8400-e29b-41d4-a716-446655440000',
+                    email: 'test@echo.com',
+                    username: 'testuser',
+                    display_name: 'Utilisateur Test',
+                    is_active: true,
+                    email_verified: true,
+                    preferences: {
+                        theme: 'system',
+                        language: 'fr',
+                        autoplay: true,
+                        crossfade: false,
+                        volume: 0.8
+                    },
+                    connected_services: [],
+                    created_at: new Date().toISOString()
+                },
+                {
+                    id: '550e8400-e29b-41d4-a716-446655440001',
+                    email: 'admin@echo.com',
+                    username: 'admin',
+                    display_name: 'Admin Echo',
+                    is_active: true,
+                    email_verified: true,
+                    preferences: {
+                        theme: 'dark',
+                        language: 'fr',
+                        autoplay: true,
+                        crossfade: true,
+                        volume: 0.9
+                    },
+                    connected_services: [],
+                    created_at: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString()
+                }
+            ];
+
+            const testUser = TEST_USERS.find(u => u.id === decoded.userId && u.email === decoded.email);
+            if (testUser) {
+                user = testUser;
+            }
+        }
 
         if (!user) {
-            return res.status(401).json({
-                error: 'Utilisateur introuvable',
-                message: 'L\'utilisateur associé au token n\'existe plus',
-                code: 'AUTH_USER_NOT_FOUND'
-            });
+            // Récupération des informations utilisateur depuis la base de données
+            user = await db.findById('users', decoded.userId);
+
+            if (!user) {
+                return res.status(401).json({
+                    error: 'Utilisateur introuvable',
+                    message: 'L\'utilisateur associé au token n\'existe plus',
+                    code: 'AUTH_USER_NOT_FOUND'
+                });
+            }
         }
 
         // Vérification que l'utilisateur est actif

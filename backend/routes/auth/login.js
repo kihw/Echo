@@ -8,8 +8,9 @@ const router = express.Router();
 // Configuration pour les utilisateurs de test en mode développement
 const TEST_USERS = [
     {
-        id: '1',
+        id: '550e8400-e29b-41d4-a716-446655440000',
         email: 'test@echo.com',
+        username: 'testuser',
         password: 'password123', // En production, ceci serait hashé
         displayName: 'Utilisateur Test',
         preferences: {
@@ -26,8 +27,9 @@ const TEST_USERS = [
         lastLoginAt: new Date().toISOString()
     },
     {
-        id: '2',
+        id: '550e8400-e29b-41d4-a716-446655440001',
         email: 'admin@echo.com',
+        username: 'admin',
         password: 'admin123',
         displayName: 'Admin Echo',
         spotifyId: 'spotify_admin_123',
@@ -63,8 +65,8 @@ router.post('/login', async (req, res) => {
         if (process.env.NODE_ENV === 'development') {
             const testUser = TEST_USERS.find(u => u.email === email && u.password === password);
             if (testUser) {
-                const token = generateToken(testUser.id);
-                const refreshToken = generateRefreshToken(testUser.id);
+                const token = generateToken(testUser);
+                const refreshToken = generateRefreshToken(testUser);
 
                 return res.json({
                     success: true,

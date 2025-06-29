@@ -2,6 +2,7 @@
 
 import { useAuth } from '@/contexts/AuthContext';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { ResponsiveDashboardLayout } from '@/components/layout/ResponsiveDashboardLayout';
 import { useState } from 'react';
 
 export default function SettingsPage() {
@@ -34,7 +35,7 @@ export default function SettingsPage() {
   }
 
   return (
-    <DashboardLayout>
+    <ResponsiveDashboardLayout>
       <div className="max-w-4xl mx-auto py-8">
         <div className="bg-white shadow rounded-lg">
           <div className="px-6 py-8">
@@ -235,6 +236,6 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
-    </DashboardLayout>
+    </ResponsiveDashboardLayout>
   );
 }

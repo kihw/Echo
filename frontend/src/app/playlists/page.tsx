@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Plus, Search, Filter, Grid, List, Play, Heart, MoreHorizontal } from 'lucide-react';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
+import { ResponsiveDashboardLayout } from '@/components/layout/ResponsiveDashboardLayout';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { Modal } from '@/components/ui/Modal';
 import { useAuth } from '@/contexts/AuthContext';
@@ -140,7 +141,7 @@ export default function PlaylistsPage() {
     }
 
     return (
-        <DashboardLayout>
+        <ResponsiveDashboardLayout>
             <div className="space-y-6">
                 {/* Header */}
                 <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
@@ -179,8 +180,8 @@ export default function PlaylistsPage() {
                             <button
                                 onClick={() => setViewMode('grid')}
                                 className={`p-2 ${viewMode === 'grid'
-                                        ? 'bg-blue-600 text-white'
-                                        : 'text-gray-600 hover:bg-gray-50'
+                                    ? 'bg-blue-600 text-white'
+                                    : 'text-gray-600 hover:bg-gray-50'
                                     } transition-colors`}
                             >
                                 <Grid className="w-5 h-5" />
@@ -188,8 +189,8 @@ export default function PlaylistsPage() {
                             <button
                                 onClick={() => setViewMode('list')}
                                 className={`p-2 ${viewMode === 'list'
-                                        ? 'bg-blue-600 text-white'
-                                        : 'text-gray-600 hover:bg-gray-50'
+                                    ? 'bg-blue-600 text-white'
+                                    : 'text-gray-600 hover:bg-gray-50'
                                     } transition-colors`}
                             >
                                 <List className="w-5 h-5" />
@@ -302,6 +303,6 @@ export default function PlaylistsPage() {
                     </div>
                 </div>
             </Modal>
-        </DashboardLayout>
+        </ResponsiveDashboardLayout>
     );
 }
