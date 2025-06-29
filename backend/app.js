@@ -17,6 +17,7 @@ const db = require('../database/connection');
 const { authMiddleware } = require('./middleware/auth');
 
 // Import des routes
+const loginAuthRoute = require('./routes/auth/login');
 const spotifyAuthRoute = require('./routes/auth/spotify');
 const deezerAuthRoute = require('./routes/auth/deezer');
 const googleAuthRoute = require('./routes/auth/google');
@@ -204,6 +205,7 @@ if (process.env.NODE_ENV === 'development') {
 }
 
 // Routes d'authentification OAuth
+app.use('/api/auth', loginAuthRoute);
 app.use('/api/auth/spotify', spotifyAuthRoute);
 app.use('/api/auth/deezer', deezerAuthRoute);
 app.use('/api/auth/google', googleAuthRoute);
