@@ -6,7 +6,7 @@ const deezerService = require('../../services/deezer');
 const ytmusicService = require('../../services/ytmusic');
 const lidarrService = require('../../services/lidarr');
 const TokenManager = require('../../services/tokenManager');
-const db = require('../../database/connection');
+const db = require('../../../database/connection');
 const { logger } = require('../../utils/logger');
 
 const router = express.Router();

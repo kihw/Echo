@@ -2,7 +2,7 @@ const express = require('express');
 const { authMiddleware } = require('../../middleware/auth');
 const playlistBuilder = require('../../logic/playlistBuilder');
 const dataSync = require('../../services/dataSync');
-const db = require('../../database/connection');
+const db = require('../../../database/connection');
 const { logger } = require('../../utils/logger');
 
 const router = express.Router();
