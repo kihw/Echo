@@ -5,7 +5,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useState } from 'react';
 
 export default function ProfilePage() {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     displayName: user?.displayName || '',
@@ -14,11 +14,16 @@ export default function ProfilePage() {
 
   const handleSave = async () => {
     try {
-      // TODO: Implement profile update API call
-      console.log('Update profile with:', formData);
+      // Update profile via API
+      await updateUser({
+        displayName: formData.displayName,
+        email: formData.email
+      });
       setIsEditing(false);
-    } catch (error) {
+      alert('Profil mis à jour avec succès !');
+    } catch (error: any) {
       console.error('Failed to update profile:', error);
+      alert(error.message || 'Erreur lors de la mise à jour du profil');
     }
   };
 

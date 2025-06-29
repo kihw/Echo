@@ -5,6 +5,8 @@ const spotifyService = require('../../services/spotify');
 const deezerService = require('../../services/deezer');
 const ytmusicService = require('../../services/ytmusic');
 const lidarrService = require('../../services/lidarr');
+const TokenManager = require('../../services/tokenManager');
+const db = require('../../database/connection');
 const { logger } = require('../../utils/logger');
 
 const router = express.Router();
@@ -21,13 +23,26 @@ router.post('/full', async (req, res) => {
         const userId = req.user.id;
         const { services = ['spotify', 'deezer', 'youtube', 'lidarr'] } = req.body;
 
-        // Récupérer les tokens utilisateur
-        // TODO: Implémenter la récupération des tokens depuis la base de données
-        const tokens = {
-            spotify: req.body.spotifyToken,
-            deezer: req.body.deezerToken,
-            google: req.body.googleToken
-        };
+        // Récupérer les tokens utilisateur depuis la base de données
+        const tokens = {};
+
+        // Récupération des tokens pour chaque service demandé
+        for (const service of services) {
+            let serviceKey = service;
+            // Mapping des noms de services
+            if (service === 'youtube') serviceKey = 'google';
+
+            try {
+                const serviceTokens = await TokenManager.refreshTokenIfNeeded(userId, serviceKey);
+                if (serviceTokens) {
+                    tokens[serviceKey] = serviceTokens.access_token;
+                } else {
+                    logger.warn(`Token manquant ou expiré pour le service ${service}`, { userId, service });
+                }
+            } catch (error) {
+                logger.error(`Erreur lors de la récupération du token ${service}:`, error);
+            }
+        }
 
         logger.info(`Synchronisation complète demandée par l'utilisateur ${userId}`, {
             services
@@ -309,16 +324,41 @@ router.get('/history', async (req, res) => {
         const userId = req.user.id;
         const { limit = 10, offset = 0 } = req.query;
 
-        // TODO: Récupérer l'historique depuis la base de données
-        const history = [];
+        // Récupérer l'historique depuis la base de données
+        const history = await db.query(`
+            SELECT 
+                id,
+                user_id,
+                service_name,
+                sync_type,
+                status,
+                items_processed,
+                items_added,
+                items_updated,
+                items_failed,
+                error_message,
+                started_at,
+                completed_at,
+                duration_ms
+            FROM sync_history 
+            WHERE user_id = $1 
+            ORDER BY started_at DESC 
+            LIMIT $2 OFFSET $3
+        `, [userId, parseInt(limit), parseInt(offset)]);
+
+        // Compter le total pour la pagination
+        const countResult = await db.query(
+            'SELECT COUNT(*) as total FROM sync_history WHERE user_id = $1',
+            [userId]
+        );
 
         res.json({
             success: true,
-            history,
+            history: history.rows,
             pagination: {
                 limit: parseInt(limit),
                 offset: parseInt(offset),
-                total: history.length
+                total: parseInt(countResult.rows[0].total)
             }
         });
 

@@ -48,6 +48,11 @@ export const authApi = {
 
   logout: () => api.post('/auth/logout'),
 
+  forgotPassword: (email: string) => api.post('/auth/forgot-password', { email }),
+
+  resetPassword: (token: string, password: string) =>
+    api.post('/auth/reset-password', { token, password }),
+
   getSpotifyAuthUrl: () => api.get('/auth/spotify/url'),
 
   getDeezerAuthUrl: () => api.get('/auth/deezer/url'),

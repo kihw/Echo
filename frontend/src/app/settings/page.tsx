@@ -5,7 +5,7 @@ import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useState } from 'react';
 
 export default function SettingsPage() {
-  const { user } = useAuth();
+  const { user, updateUser } = useAuth();
   const [preferences, setPreferences] = useState(user?.preferences || {
     theme: 'system',
     language: 'fr',
@@ -16,10 +16,12 @@ export default function SettingsPage() {
 
   const handleSave = async () => {
     try {
-      // TODO: Implement preferences update API call
-      console.log('Update preferences with:', preferences);
-    } catch (error) {
+      // Update preferences via API
+      await updateUser({ preferences });
+      alert('Paramètres sauvegardés avec succès !');
+    } catch (error: any) {
       console.error('Failed to update preferences:', error);
+      alert(error.message || 'Erreur lors de la sauvegarde des paramètres');
     }
   };
 

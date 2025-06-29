@@ -184,8 +184,8 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
                         key={item.name}
                         href={item.href}
                         className={`flex items-center space-x-3 px-3 py-2 rounded-lg transition-colors ${isActive
-                            ? 'bg-primary-100 text-primary-700'
-                            : 'text-secondary-600 hover:bg-secondary-100 hover:text-secondary-900'
+                          ? 'bg-primary-100 text-primary-700'
+                          : 'text-secondary-600 hover:bg-secondary-100 hover:text-secondary-900'
                           }`}
                         onClick={() => setIsSidebarOpen(false)}
                       >
@@ -359,3 +359,5 @@ export function DashboardLayout({ children }: DashboardLayoutProps) {
     </div>
   );
 }
+
+export default DashboardLayout;
