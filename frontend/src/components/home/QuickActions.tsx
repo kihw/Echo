@@ -14,7 +14,7 @@ export function QuickActions() {
       action: () => {
         // Navigate to playlist generation
         console.log('Generate playlist');
-      },
+      }
     },
     {
       id: 'discover',
@@ -25,7 +25,7 @@ export function QuickActions() {
       action: () => {
         // Navigate to discovery
         console.log('Discover music');
-      },
+      }
     },
     {
       id: 'create',
@@ -36,7 +36,7 @@ export function QuickActions() {
       action: () => {
         // Create new playlist
         console.log('Create playlist');
-      },
+      }
     },
     {
       id: 'import',
@@ -47,22 +47,22 @@ export function QuickActions() {
       action: () => {
         // Navigate to import
         console.log('Import playlists');
-      },
-    },
+      }
+    }
   ];
 
   const getColorClasses = (color: string) => {
     switch (color) {
-      case 'primary':
-        return 'bg-primary-100 text-primary-700 hover:bg-primary-200';
-      case 'accent':
-        return 'bg-accent-100 text-accent-700 hover:bg-accent-200';
-      case 'purple':
-        return 'bg-purple-100 text-purple-700 hover:bg-purple-200';
-      case 'green':
-        return 'bg-green-100 text-green-700 hover:bg-green-200';
-      default:
-        return 'bg-secondary-100 text-secondary-700 hover:bg-secondary-200';
+    case 'primary':
+      return 'bg-primary-100 text-primary-700 hover:bg-primary-200';
+    case 'accent':
+      return 'bg-accent-100 text-accent-700 hover:bg-accent-200';
+    case 'purple':
+      return 'bg-purple-100 text-purple-700 hover:bg-purple-200';
+    case 'green':
+      return 'bg-green-100 text-green-700 hover:bg-green-200';
+    default:
+      return 'bg-secondary-100 text-secondary-700 hover:bg-secondary-200';
     }
   };
 
@@ -71,9 +71,9 @@ export function QuickActions() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-      },
-    },
+        staggerChildren: 0.1
+      }
+    }
   };
 
   const itemVariants = {
@@ -83,9 +83,9 @@ export function QuickActions() {
       opacity: 1,
       transition: {
         duration: 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      },
-    },
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
   };
 
   return (
@@ -110,11 +110,11 @@ export function QuickActions() {
           >
             <div className="flex items-start justify-between mb-4">
               <div className={`p-3 rounded-lg ${action.color === 'primary' ? 'bg-primary-200' :
-                  action.color === 'accent' ? 'bg-accent-200' :
-                    action.color === 'purple' ? 'bg-purple-200' :
-                      action.color === 'green' ? 'bg-green-200' :
-                        'bg-secondary-200'
-                }`}>
+                action.color === 'accent' ? 'bg-accent-200' :
+                  action.color === 'purple' ? 'bg-purple-200' :
+                    action.color === 'green' ? 'bg-green-200' :
+                      'bg-secondary-200'
+              }`}>
                 <action.icon className="w-6 h-6" />
               </div>
               <div className="opacity-0 group-hover:opacity-100 transition-opacity">

@@ -9,7 +9,7 @@ export default function ProfilePage() {
   const [isEditing, setIsEditing] = useState(false);
   const [formData, setFormData] = useState({
     displayName: user?.displayName || '',
-    email: user?.email || '',
+    email: user?.email || ''
   });
 
   const handleSave = async () => {

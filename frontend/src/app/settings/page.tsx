@@ -11,7 +11,7 @@ export default function SettingsPage() {
     language: 'fr',
     autoplay: true,
     crossfade: false,
-    volume: 0.8,
+    volume: 0.8
   });
 
   const handleSave = async () => {
@@ -91,11 +91,11 @@ export default function SettingsPage() {
                     <button
                       onClick={() => setPreferences({ ...preferences, autoplay: !preferences.autoplay })}
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${preferences.autoplay ? 'bg-primary-600' : 'bg-gray-200'
-                        }`}
+                      }`}
                     >
                       <span
                         className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${preferences.autoplay ? 'translate-x-6' : 'translate-x-1'
-                          }`}
+                        }`}
                       />
                     </button>
                   </div>
@@ -112,11 +112,11 @@ export default function SettingsPage() {
                     <button
                       onClick={() => setPreferences({ ...preferences, crossfade: !preferences.crossfade })}
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${preferences.crossfade ? 'bg-primary-600' : 'bg-gray-200'
-                        }`}
+                      }`}
                     >
                       <span
                         className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${preferences.crossfade ? 'translate-x-6' : 'translate-x-1'
-                          }`}
+                        }`}
                       />
                     </button>
                   </div>

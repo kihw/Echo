@@ -25,7 +25,7 @@ export function WelcomeHero() {
           <motion.div
             initial={{ scale: 0 }}
             animate={{ scale: 1 }}
-            transition={{ delay: 0.2, duration: 0.5, type: "spring" }}
+            transition={{ delay: 0.2, duration: 0.5, type: 'spring' }}
             className="flex justify-center"
           >
             <div className="w-24 h-24 bg-gradient-to-br from-primary-500 to-primary-600 rounded-3xl flex items-center justify-center shadow-xl">
@@ -135,7 +135,7 @@ export function WelcomeHero() {
         transition={{
           duration: 4,
           repeat: Infinity,
-          ease: "easeInOut"
+          ease: 'easeInOut'
         }}
         className="absolute top-20 right-20 w-20 h-20 bg-gradient-to-br from-primary-400 to-primary-500 rounded-2xl shadow-lg hidden lg:flex items-center justify-center"
       >
@@ -150,7 +150,7 @@ export function WelcomeHero() {
         transition={{
           duration: 3,
           repeat: Infinity,
-          ease: "easeInOut",
+          ease: 'easeInOut',
           delay: 1
         }}
         className="absolute bottom-40 left-16 w-16 h-16 bg-gradient-to-br from-accent-400 to-accent-500 rounded-xl shadow-lg hidden lg:flex items-center justify-center"

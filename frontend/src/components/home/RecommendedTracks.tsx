@@ -26,7 +26,7 @@ export function RecommendedTracks() {
       duration: 178,
       popularity: 85,
       isLiked: false,
-      recommendationReason: 'Basé sur vos écoutes récentes',
+      recommendationReason: 'Basé sur vos écoutes récentes'
     },
     {
       id: '2',
@@ -36,7 +36,7 @@ export function RecommendedTracks() {
       duration: 195,
       popularity: 72,
       isLiked: true,
-      recommendationReason: 'Fans d\'Arctic Monkeys aiment aussi',
+      recommendationReason: 'Fans d\'Arctic Monkeys aiment aussi'
     },
     {
       id: '3',
@@ -46,7 +46,7 @@ export function RecommendedTracks() {
       duration: 228,
       popularity: 91,
       isLiked: false,
-      recommendationReason: 'Tendance cette semaine',
+      recommendationReason: 'Tendance cette semaine'
     },
     {
       id: '4',
@@ -56,7 +56,7 @@ export function RecommendedTracks() {
       duration: 197,
       popularity: 88,
       isLiked: false,
-      recommendationReason: 'Découverte personnalisée',
+      recommendationReason: 'Découverte personnalisée'
     },
     {
       id: '5',
@@ -66,8 +66,8 @@ export function RecommendedTracks() {
       duration: 237,
       popularity: 83,
       isLiked: false,
-      recommendationReason: 'Votre genre préféré',
-    },
+      recommendationReason: 'Votre genre préféré'
+    }
   ]);
 
   const [currentlyPlaying, setCurrentlyPlaying] = useState<string | null>(null);
@@ -106,9 +106,9 @@ export function RecommendedTracks() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.05,
-      },
-    },
+        staggerChildren: 0.05
+      }
+    }
   };
 
   const itemVariants = {
@@ -118,9 +118,9 @@ export function RecommendedTracks() {
       opacity: 1,
       transition: {
         duration: 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      },
-    },
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
   };
 
   return (
@@ -150,24 +150,24 @@ export function RecommendedTracks() {
               key={track.id}
               variants={itemVariants}
               className={`group p-4 rounded-lg border transition-all duration-300 hover:shadow-md ${isPlaying
-                  ? 'border-primary-300 bg-primary-50'
-                  : 'border-secondary-200 hover:border-primary-300 bg-white'
-                }`}
+                ? 'border-primary-300 bg-primary-50'
+                : 'border-secondary-200 hover:border-primary-300 bg-white'
+              }`}
             >
               <div className="flex items-center space-x-4">
                 {/* Track Number / Play Button */}
                 <div className="relative w-10 h-10 flex-shrink-0">
                   <div className={`w-full h-full rounded-lg flex items-center justify-center transition-all duration-300 ${isPlaying ? 'bg-primary-100' : 'bg-secondary-100 group-hover:bg-primary-100'
-                    }`}>
+                  }`}>
                     <span className={`text-sm font-medium transition-opacity duration-300 ${isPlaying ? 'opacity-0' : 'opacity-100 group-hover:opacity-0'
-                      }`}>
+                    }`}>
                       {(index + 1).toString().padStart(2, '0')}
                     </span>
 
                     <button
                       onClick={() => handlePlayTrack(track.id)}
                       className={`absolute inset-0 rounded-lg flex items-center justify-center transition-all duration-300 ${isPlaying ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'
-                        }`}
+                      }`}
                     >
                       <Play className={`w-5 h-5 ${isPlaying ? 'text-primary-600' : 'text-secondary-700'}`} />
                     </button>
@@ -196,7 +196,7 @@ export function RecommendedTracks() {
                   <div className="flex items-start justify-between">
                     <div className="min-w-0 flex-1">
                       <h3 className={`font-medium truncate transition-colors ${isPlaying ? 'text-primary-700' : 'text-secondary-900'
-                        }`}>
+                      }`}>
                         {track.title}
                       </h3>
                       <p className="text-sm text-secondary-600 truncate">
@@ -226,9 +226,9 @@ export function RecommendedTracks() {
                       <button
                         onClick={() => handleLikeTrack(track.id)}
                         className={`p-2 rounded-lg transition-all duration-300 ${track.isLiked
-                            ? 'text-red-500 bg-red-50'
-                            : 'text-secondary-400 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100'
-                          }`}
+                          ? 'text-red-500 bg-red-50'
+                          : 'text-secondary-400 hover:text-red-500 hover:bg-red-50 opacity-0 group-hover:opacity-100'
+                        }`}
                       >
                         <Heart className={`w-4 h-4 ${track.isLiked ? 'fill-current' : ''}`} />
                       </button>

@@ -32,10 +32,10 @@ export default function CallbackPage() {
         // Exchange code for token
         const response = await api.post(`/auth/${provider}/callback`, {
           code,
-          state,
+          state
         });
 
-        const { token, user } = response.data;
+        const { token, user: _user } = response.data;
 
         // Store token
         localStorage.setItem('auth_token', token);

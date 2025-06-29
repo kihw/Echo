@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Eye, EyeOff, Music, Mail, Lock, User, ArrowRight, Check } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -13,7 +13,7 @@ export default function RegisterPage() {
     email: '',
     password: '',
     confirmPassword: '',
-    displayName: '',
+    displayName: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -99,7 +99,7 @@ export default function RegisterPage() {
             <motion.div
               initial={{ scale: 0 }}
               animate={{ scale: 1 }}
-              transition={{ delay: 0.2, duration: 0.5, type: "spring" }}
+              transition={{ delay: 0.2, duration: 0.5, type: 'spring' }}
               className="w-16 h-16 bg-white rounded-2xl flex items-center justify-center mx-auto mb-4"
             >
               <Music className="w-8 h-8 text-accent-600" />
@@ -186,7 +186,7 @@ export default function RegisterPage() {
                         <div
                           key={i}
                           className={`h-1 flex-1 rounded-full transition-colors ${i < passwordStrength ? strengthColors[passwordStrength - 1] : 'bg-secondary-200'
-                            }`}
+                          }`}
                         />
                       ))}
                     </div>

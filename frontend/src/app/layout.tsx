@@ -1,3 +1,4 @@
+import React from 'react';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { Providers } from '@/components/providers/Providers';
@@ -16,7 +17,7 @@ export const metadata: Metadata = {
   formatDetection: {
     email: false,
     address: false,
-    telephone: false,
+    telephone: false
   },
   robots: {
     index: true,
@@ -26,13 +27,13 @@ export const metadata: Metadata = {
       follow: true,
       'max-video-preview': -1,
       'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
+      'max-snippet': -1
+    }
   },
   icons: {
     icon: '/favicon.ico',
     shortcut: '/favicon-16x16.png',
-    apple: '/apple-touch-icon.png',
+    apple: '/apple-touch-icon.png'
   },
   manifest: '/manifest.json',
   openGraph: {
@@ -47,30 +48,30 @@ export const metadata: Metadata = {
         url: '/og-image.png',
         width: 1200,
         height: 630,
-        alt: 'Echo Music Player',
-      },
-    ],
+        alt: 'Echo Music Player'
+      }
+    ]
   },
   twitter: {
     card: 'summary_large_image',
     title: 'Echo Music Player',
     description: 'Lecteur de musique intelligent avec synchronisation multi-plateforme',
-    images: ['/og-image.png'],
+    images: ['/og-image.png']
   },
   viewport: {
     width: 'device-width',
     initialScale: 1,
     maximumScale: 1,
-    userScalable: false,
+    userScalable: false
   },
   themeColor: [
     { media: '(prefers-color-scheme: light)', color: '#3b82f6' },
-    { media: '(prefers-color-scheme: dark)', color: '#1e40af' },
-  ],
+    { media: '(prefers-color-scheme: dark)', color: '#1e40af' }
+  ]
 };
 
 export default function RootLayout({
-  children,
+  children
 }: {
   children: React.ReactNode;
 }) {
@@ -98,18 +99,18 @@ export default function RootLayout({
               className: 'text-sm',
               style: {
                 background: '#363636',
-                color: '#fff',
+                color: '#fff'
               },
               success: {
                 style: {
-                  background: '#10b981',
-                },
+                  background: '#10b981'
+                }
               },
               error: {
                 style: {
-                  background: '#ef4444',
-                },
-              },
+                  background: '#ef4444'
+                }
+              }
             }}
           />
         </Providers>

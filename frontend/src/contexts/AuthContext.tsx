@@ -90,13 +90,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               language: 'fr',
               autoplay: true,
               crossfade: false,
-              volume: 0.8,
+              volume: 0.8
             },
             subscription: {
-              type: 'free' as const,
+              type: 'free' as const
             },
             createdAt: new Date().toISOString(),
-            lastLoginAt: new Date().toISOString(),
+            lastLoginAt: new Date().toISOString()
           }
         },
         {
@@ -113,13 +113,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
               language: 'fr',
               autoplay: true,
               crossfade: true,
-              volume: 0.9,
+              volume: 0.9
             },
             subscription: {
-              type: 'premium' as const,
+              type: 'premium' as const
             },
             createdAt: new Date(Date.now() - 30 * 24 * 60 * 60 * 1000).toISOString(),
-            lastLoginAt: new Date().toISOString(),
+            lastLoginAt: new Date().toISOString()
           }
         }
       ];
@@ -173,7 +173,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await api.post('/auth/register', {
         email,
         password,
-        displayName,
+        displayName
       });
       const { token, user: userData } = response.data;
 
@@ -226,7 +226,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     register,
     logout,
     updateUser,
-    refreshUser,
+    refreshUser
   };
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;

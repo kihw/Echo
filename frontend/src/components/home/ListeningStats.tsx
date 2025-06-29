@@ -24,7 +24,7 @@ export function ListeningStats() {
     weeklyGoal: 1800, // 30 hours
     weeklyProgress: 1247,
     streak: 12,
-    monthlyRank: 3,
+    monthlyRank: 3
   });
 
   const [timeOfDay, setTimeOfDay] = useState('');
@@ -58,9 +58,9 @@ export function ListeningStats() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-      },
-    },
+        staggerChildren: 0.1
+      }
+    }
   };
 
   const itemVariants = {
@@ -70,9 +70,9 @@ export function ListeningStats() {
       opacity: 1,
       transition: {
         duration: 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      },
-    },
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
   };
 
   return (
@@ -249,7 +249,7 @@ export function ListeningStats() {
               {[
                 { time: 'Matin (6h-12h)', percentage: 25, color: 'bg-yellow-400' },
                 { time: 'Après-midi (12h-18h)', percentage: 45, color: 'bg-blue-400' },
-                { time: 'Soirée (18h-24h)', percentage: 30, color: 'bg-purple-400' },
+                { time: 'Soirée (18h-24h)', percentage: 30, color: 'bg-purple-400' }
               ].map((period, index) => (
                 <div key={index} className="space-y-2">
                   <div className="flex justify-between text-sm">

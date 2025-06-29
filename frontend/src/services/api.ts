@@ -1,14 +1,14 @@
 import axios from 'axios';
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
 // Create axios instance
 export const api = axios.create({
   baseURL: API_BASE_URL,
   timeout: 10000,
   headers: {
-    'Content-Type': 'application/json',
-  },
+    'Content-Type': 'application/json'
+  }
 });
 
 // Request interceptor to add auth token
@@ -58,7 +58,7 @@ export const authApi = {
   getDeezerAuthUrl: () => api.get('/auth/deezer/url'),
 
   handleOAuthCallback: (provider: string, code: string) =>
-    api.post(`/auth/${provider}/callback`, { code }),
+    api.post(`/auth/${provider}/callback`, { code })
 };
 
 // User API endpoints
@@ -72,7 +72,7 @@ export const userApi = {
 
   getStats: () => api.get('/user/stats'),
 
-  deleteAccount: () => api.delete('/user/profile'),
+  deleteAccount: () => api.delete('/user/profile')
 };
 
 // Playlist API endpoints
@@ -102,7 +102,7 @@ export const playlistApi = {
   exportPlaylist: (id: string, platform: string) =>
     api.post(`/playlist/${id}/export`, { platform }),
 
-  duplicatePlaylist: (id: string) => api.post(`/playlist/${id}/duplicate`),
+  duplicatePlaylist: (id: string) => api.post(`/playlist/${id}/duplicate`)
 };
 
 // Music API endpoints
@@ -122,7 +122,7 @@ export const musicApi = {
   getGenres: () => api.get('/music/genres'),
 
   getPopular: (type?: string, limit?: number) =>
-    api.get('/music/popular', { params: { type, limit } }),
+    api.get('/music/popular', { params: { type, limit } })
 };
 
 // Sync API endpoints
@@ -139,7 +139,7 @@ export const syncApi = {
     api.get('/sync/history', { params: { limit } }),
 
   importFromService: (service: string, data: any) =>
-    api.post(`/sync/import/${service}`, data),
+    api.post(`/sync/import/${service}`, data)
 };
 
 // Player API endpoints
@@ -167,7 +167,7 @@ export const playerApi = {
 
   getQueue: () => api.get('/player/queue'),
 
-  clearQueue: () => api.delete('/player/queue'),
+  clearQueue: () => api.delete('/player/queue')
 };
 
 export default api;

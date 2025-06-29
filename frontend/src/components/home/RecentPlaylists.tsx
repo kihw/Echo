@@ -24,7 +24,7 @@ export function RecentPlaylists() {
       trackCount: 47,
       duration: 180, // minutes
       lastPlayed: '2024-06-28T10:30:00Z',
-      isLiked: true,
+      isLiked: true
     },
     {
       id: '2',
@@ -32,7 +32,7 @@ export function RecentPlaylists() {
       description: 'Nouvelles trouvailles musicales',
       trackCount: 23,
       duration: 95,
-      lastPlayed: '2024-06-28T08:15:00Z',
+      lastPlayed: '2024-06-28T08:15:00Z'
     },
     {
       id: '3',
@@ -40,7 +40,7 @@ export function RecentPlaylists() {
       description: 'Pour se détendre après une longue journée',
       trackCount: 31,
       duration: 125,
-      lastPlayed: '2024-06-27T22:45:00Z',
+      lastPlayed: '2024-06-27T22:45:00Z'
     },
     {
       id: '4',
@@ -48,8 +48,8 @@ export function RecentPlaylists() {
       description: 'Motivation musicale pour le sport',
       trackCount: 18,
       duration: 75,
-      lastPlayed: '2024-06-27T07:00:00Z',
-    },
+      lastPlayed: '2024-06-27T07:00:00Z'
+    }
   ]);
 
   const formatDuration = (minutes: number) => {
@@ -81,9 +81,9 @@ export function RecentPlaylists() {
     visible: {
       opacity: 1,
       transition: {
-        staggerChildren: 0.1,
-      },
-    },
+        staggerChildren: 0.1
+      }
+    }
   };
 
   const itemVariants = {
@@ -93,9 +93,9 @@ export function RecentPlaylists() {
       opacity: 1,
       transition: {
         duration: 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      },
-    },
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
   };
 
   return (

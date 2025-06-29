@@ -1,7 +1,6 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
-import { playerApi } from '@/services/api';
 
 export interface Track {
   id: string;
@@ -98,7 +97,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     isRepeat: 'off',
     isShuffle: false,
     hasNext: false,
-    hasPrevious: false,
+    hasPrevious: false
   });
 
   const [favorites, setFavorites] = useState<Set<string>>(new Set());
@@ -175,7 +174,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         ...prev,
         currentTrack: track,
         currentPlaylist: playlist || null,
-        isLoading: true,
+        isLoading: true
       }));
 
       if (track.url) {
@@ -186,7 +185,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
             ...prev,
             isPlaying: true,
             isPaused: false,
-            isLoading: false,
+            isLoading: false
           }));
         } catch (error) {
           console.error('Play error:', error);
@@ -200,7 +199,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         setState(prev => ({
           ...prev,
           isPlaying: true,
-          isPaused: false,
+          isPaused: false
         }));
       } catch (error) {
         console.error('Resume error:', error);
@@ -214,7 +213,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       setState(prev => ({
         ...prev,
         isPlaying: false,
-        isPaused: true,
+        isPaused: true
       }));
     }
   }, [audioElement, state.isPlaying]);
@@ -231,7 +230,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         ...prev,
         isPlaying: false,
         isPaused: false,
-        position: 0,
+        position: 0
       }));
     }
   }, [audioElement]);
@@ -244,7 +243,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       const nextTrack = queue[0];
       setState(prev => ({
         ...prev,
-        queue: prev.queue.slice(1),
+        queue: prev.queue.slice(1)
       }));
       await play(nextTrack);
     } else if (currentPlaylist && currentTrack) {
@@ -298,14 +297,14 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
   const addToQueue = useCallback(async (track: Track) => {
     setState(prev => ({
       ...prev,
-      queue: [...prev.queue, track],
+      queue: [...prev.queue, track]
     }));
   }, []);
 
   const removeFromQueue = useCallback((index: number) => {
     setState(prev => ({
       ...prev,
-      queue: prev.queue.filter((_, i) => i !== index),
+      queue: prev.queue.filter((_, i) => i !== index)
     }));
   }, []);
 
@@ -318,7 +317,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     if (track) {
       setState(prev => ({
         ...prev,
-        queue: prev.queue.filter((_, i) => i !== index),
+        queue: prev.queue.filter((_, i) => i !== index)
       }));
       await play(track);
     }
@@ -400,7 +399,7 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     setShuffle,
     playPlaylist,
     toggleFavorite,
-    isFavorite,
+    isFavorite
   };
 
   return <PlayerContext.Provider value={value}>{children}</PlayerContext.Provider>;

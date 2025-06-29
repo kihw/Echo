@@ -226,7 +226,7 @@ export class AudioEngine {
       ended: this.audio.ended,
       readyState: this.audio.readyState,
       buffered: this.audio.buffered,
-      playbackRate: this.audio.playbackRate,
+      playbackRate: this.audio.playbackRate
     };
   }
 

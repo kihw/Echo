@@ -38,9 +38,9 @@ export default function HomePage() {
       opacity: 1,
       transition: {
         staggerChildren: 0.1,
-        delayChildren: 0.2,
-      },
-    },
+        delayChildren: 0.2
+      }
+    }
   };
 
   const itemVariants = {
@@ -50,9 +50,9 @@ export default function HomePage() {
       opacity: 1,
       transition: {
         duration: 0.5,
-        ease: [0.25, 0.46, 0.45, 0.94],
-      },
-    },
+        ease: [0.25, 0.46, 0.45, 0.94]
+      }
+    }
   };
 
   if (!isAuthenticated) {
@@ -169,20 +169,20 @@ export default function HomePage() {
                       action: 'Playlist créée',
                       title: 'Chill Vibes',
                       time: 'Il y a 2h',
-                      icon: Music,
+                      icon: Music
                     },
                     {
                       action: 'Track aimée',
                       title: 'Bohemian Rhapsody',
                       time: 'Il y a 4h',
-                      icon: Heart,
+                      icon: Heart
                     },
                     {
                       action: 'Découverte',
                       title: 'Arctic Monkeys',
                       time: 'Hier',
-                      icon: TrendingUp,
-                    },
+                      icon: TrendingUp
+                    }
                   ].map((activity, index) => (
                     <div key={index} className="flex items-center space-x-3">
                       <div className="p-2 bg-secondary-100 rounded-lg">
@@ -223,22 +223,22 @@ export default function HomePage() {
                     description: 'Créez automatiquement une playlist pour vous relaxer',
                     icon: Shuffle,
                     color: 'primary',
-                    action: 'Générer',
+                    action: 'Générer'
                   },
                   {
                     title: 'Synchroniser Spotify',
                     description: 'Importez vos playlists et tracks favorites',
                     icon: Play,
                     color: 'spotify',
-                    action: 'Synchroniser',
+                    action: 'Synchroniser'
                   },
                   {
                     title: 'Découvrir par genre',
                     description: 'Explorez de nouveaux styles musicaux',
                     icon: TrendingUp,
                     color: 'accent',
-                    action: 'Explorer',
-                  },
+                    action: 'Explorer'
+                  }
                 ].map((suggestion, index) => (
                   <div
                     key={index}
@@ -246,9 +246,9 @@ export default function HomePage() {
                   >
                     <div className="flex items-start space-x-3">
                       <div className={`p-2 rounded-lg ${suggestion.color === 'primary' ? 'bg-primary-100 text-primary-600' :
-                          suggestion.color === 'spotify' ? 'bg-green-100 text-green-600' :
-                            'bg-accent-100 text-accent-600'
-                        }`}>
+                        suggestion.color === 'spotify' ? 'bg-green-100 text-green-600' :
+                          'bg-accent-100 text-accent-600'
+                      }`}>
                         <suggestion.icon className="w-5 h-5" />
                       </div>
                       <div className="flex-1">
@@ -259,9 +259,9 @@ export default function HomePage() {
                           {suggestion.description}
                         </p>
                         <button className={`text-sm font-medium ${suggestion.color === 'primary' ? 'text-primary-600 hover:text-primary-700' :
-                            suggestion.color === 'spotify' ? 'text-green-600 hover:text-green-700' :
-                              'text-accent-600 hover:text-accent-700'
-                          } transition-colors`}>
+                          suggestion.color === 'spotify' ? 'text-green-600 hover:text-green-700' :
+                            'text-accent-600 hover:text-accent-700'
+                        } transition-colors`}>
                           {suggestion.action} →
                         </button>
                       </div>
