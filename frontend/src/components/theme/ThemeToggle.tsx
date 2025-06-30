@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '../../contexts/ThemeContext';
 import { SunIcon, MoonIcon, ComputerDesktopIcon } from '@heroicons/react/24/outline';
 import { SunIcon as SunIconSolid, MoonIcon as MoonIconSolid } from '@heroicons/react/24/solid';
 
@@ -11,10 +11,10 @@ interface ThemeToggleProps {
   className?: string;
 }
 
-export function ThemeToggle({ 
-  variant = 'button', 
-  size = 'md', 
-  className = '' 
+export function ThemeToggle({
+  variant = 'button',
+  size = 'md',
+  className = ''
 }: ThemeToggleProps) {
   const { theme, resolvedTheme, setTheme, toggleTheme } = useTheme();
 
@@ -49,22 +49,22 @@ export function ThemeToggle({
         aria-label={`Basculer vers le thème ${resolvedTheme === 'light' ? 'sombre' : 'clair'}`}
       >
         <div className="relative overflow-hidden">
-          <SunIconSolid 
+          <SunIconSolid
             className={`
               ${iconSizeClasses[size]}
               absolute transition-all duration-300 ease-in-out
-              ${resolvedTheme === 'light' 
-                ? 'rotate-0 scale-100 opacity-100' 
+              ${resolvedTheme === 'light'
+                ? 'rotate-0 scale-100 opacity-100'
                 : 'rotate-90 scale-0 opacity-0'
               }
             `}
           />
-          <MoonIconSolid 
+          <MoonIconSolid
             className={`
               ${iconSizeClasses[size]}
               absolute transition-all duration-300 ease-in-out
-              ${resolvedTheme === 'dark' 
-                ? 'rotate-0 scale-100 opacity-100' 
+              ${resolvedTheme === 'dark'
+                ? 'rotate-0 scale-100 opacity-100'
                 : '-rotate-90 scale-0 opacity-0'
               }
             `}
@@ -108,21 +108,21 @@ export function ThemeToggle({
 
   // Variant button (3 boutons séparés)
   const themes = [
-    { 
-      key: 'light', 
-      label: 'Clair', 
+    {
+      key: 'light',
+      label: 'Clair',
       icon: SunIcon,
       activeIcon: SunIconSolid
     },
-    { 
-      key: 'dark', 
-      label: 'Sombre', 
+    {
+      key: 'dark',
+      label: 'Sombre',
       icon: MoonIcon,
       activeIcon: MoonIconSolid
     },
-    { 
-      key: 'system', 
-      label: 'Système', 
+    {
+      key: 'system',
+      label: 'Système',
       icon: ComputerDesktopIcon,
       activeIcon: ComputerDesktopIcon
     }
@@ -165,7 +165,7 @@ export function ThemeToggle({
 // Hook pour obtenir l'icône du thème actuel
 export function useThemeIcon(size: 'sm' | 'md' | 'lg' = 'md') {
   const { resolvedTheme } = useTheme();
-  
+
   const iconSizeClasses = {
     sm: 'h-4 w-4',
     md: 'h-5 w-5',
@@ -175,6 +175,6 @@ export function useThemeIcon(size: 'sm' | 'md' | 'lg' = 'md') {
   if (resolvedTheme === 'dark') {
     return <MoonIconSolid className={iconSizeClasses[size]} />;
   }
-  
+
   return <SunIconSolid className={iconSizeClasses[size]} />;
 }

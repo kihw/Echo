@@ -1,9 +1,10 @@
 'use client';
 
 import { useAuth } from '@/contexts/AuthContext';
-import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ResponsiveDashboardLayout } from '@/components/layout/ResponsiveDashboardLayout';
 import { useState } from 'react';
+import { log } from '@/services/logger';
+import notifications from '@/services/notifications';
 
 export default function SettingsPage() {
   const { user, updateUser } = useAuth();
@@ -23,10 +24,10 @@ export default function SettingsPage() {
         theme: preferences.theme as 'light' | 'dark' | 'system'
       };
       await updateUser({ preferences: validatedPreferences });
-      alert('Paramètres sauvegardés avec succès !');
+      notifications.success('Paramètres sauvegardés avec succès !');
     } catch (error: any) {
-      console.error('Failed to update preferences:', error);
-      alert(error.message || 'Erreur lors de la sauvegarde des paramètres');
+      log.error('Failed to update preferences:', error);
+      notifications.error(error.message || 'Erreur lors de la sauvegarde des paramètres');
     }
   };
 

@@ -181,14 +181,9 @@ class IntelligentCache {
             return cached;
         }
 
-        try {
-            const data = await provider();
-            this.set(key, data, options);
-            return data;
-        } catch (error) {
-            // Don't cache errors
-            throw error;
-        }
+        const data = await provider();
+        this.set(key, data, options);
+        return data;
     }
 }
 

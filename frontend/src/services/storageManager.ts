@@ -1,4 +1,6 @@
 // Type definitions for better TypeScript support
+import { log } from './logger';
+
 interface Track {
     id: string;
     title: string;
@@ -93,7 +95,7 @@ export class StorageManager {
       localStorage.setItem(this.getKey(key), serializedValue);
       return true;
     } catch (error) {
-      console.error('Failed to save to localStorage:', error);
+      log.error('Failed to save to localStorage:', error);
       return false;
     }
   }
@@ -106,7 +108,7 @@ export class StorageManager {
       if (serializedValue === null) return defaultValue || null;
       return JSON.parse(serializedValue) as T;
     } catch (error) {
-      console.error('Failed to read from localStorage:', error);
+      log.error('Failed to read from localStorage:', error);
       return defaultValue || null;
     }
   }
@@ -118,7 +120,7 @@ export class StorageManager {
       localStorage.removeItem(this.getKey(key));
       return true;
     } catch (error) {
-      console.error('Failed to remove from localStorage:', error);
+      log.error('Failed to remove from localStorage:', error);
       return false;
     }
   }
@@ -136,7 +138,7 @@ export class StorageManager {
       });
       return true;
     } catch (error) {
-      console.error('Failed to clear localStorage:', error);
+      log.error('Failed to clear localStorage:', error);
       return false;
     }
   }
@@ -431,7 +433,7 @@ export class StorageManager {
 
       return true;
     } catch (error) {
-      console.error('Failed to import data:', error);
+      log.error('Failed to import data:', error);
       return false;
     }
   }

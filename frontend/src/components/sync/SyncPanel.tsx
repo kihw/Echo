@@ -2,9 +2,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { 
-  ArrowPathIcon, 
-  CheckCircleIcon, 
+import { log } from '@/services/logger';
+import notifications from '@/services/notifications';
+import {
+  ArrowPathIcon,
+  CheckCircleIcon,
   ExclamationTriangleIcon,
   XCircleIcon,
   ClockIcon,
@@ -64,16 +66,16 @@ export function SyncPanel({ userId, onSyncComplete }: SyncPanelProps) {
     text: {
       primary: resolvedTheme === 'dark' ? 'text-slate-100' : 'text-slate-900',
       secondary: resolvedTheme === 'dark' ? 'text-slate-300' : 'text-slate-600',
-      muted: resolvedTheme === 'dark' ? 'text-slate-400' : 'text-slate-500',
+      muted: resolvedTheme === 'dark' ? 'text-slate-400' : 'text-slate-500'
     },
     button: {
-      primary: `${resolvedTheme === 'dark' 
-        ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+      primary: `${resolvedTheme === 'dark'
+        ? 'bg-blue-600 hover:bg-blue-700 text-white'
         : 'bg-blue-600 hover:bg-blue-700 text-white'}`,
-      secondary: `${resolvedTheme === 'dark' 
-        ? 'bg-slate-700 hover:bg-slate-600 text-slate-100 border-slate-600' 
-        : 'bg-white hover:bg-slate-50 text-slate-900 border-slate-300'}`,
-    },
+      secondary: `${resolvedTheme === 'dark'
+        ? 'bg-slate-700 hover:bg-slate-600 text-slate-100 border-slate-600'
+        : 'bg-white hover:bg-slate-50 text-slate-900 border-slate-300'}`
+    }
   };
 
   // Charger l'historique de synchronisation au montage
@@ -85,8 +87,8 @@ export function SyncPanel({ userId, onSyncComplete }: SyncPanelProps) {
     try {
       const response = await fetch('/api/sync/history?limit=10', {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
       });
 
       if (response.ok) {
@@ -94,7 +96,8 @@ export function SyncPanel({ userId, onSyncComplete }: SyncPanelProps) {
         setSyncHistory(data.data || []);
       }
     } catch (error) {
-      console.error('Erreur lors du chargement de l\'historique:', error);
+      log.error('Erreur lors du chargement de l\'historique:', error);
+      notifications.error('Impossible de charger l\'historique de synchronisation');
     }
   };
 
@@ -107,12 +110,12 @@ export function SyncPanel({ userId, onSyncComplete }: SyncPanelProps) {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
           ...syncConfig,
           dryRun
-        }),
+        })
       });
 
       if (!response.ok) {
@@ -143,8 +146,8 @@ export function SyncPanel({ userId, onSyncComplete }: SyncPanelProps) {
       try {
         const response = await fetch(`/api/sync/status/${syncId}`, {
           headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`,
-          },
+            'Authorization': `Bearer ${localStorage.getItem('token')}`
+          }
         });
 
         if (response.ok) {
@@ -162,7 +165,8 @@ export function SyncPanel({ userId, onSyncComplete }: SyncPanelProps) {
           setTimeout(poll, 2000);
         }
       } catch (error) {
-        console.error('Erreur lors du polling:', error);
+        log.error('Erreur lors du polling de synchronisation:', error);
+        // Don't show notification for polling errors as they're frequent
       }
     };
 
@@ -223,7 +227,7 @@ export function SyncPanel({ userId, onSyncComplete }: SyncPanelProps) {
             Synchronisation
           </h2>
         </div>
-        
+
         <button
           onClick={() => setShowAdvanced(!showAdvanced)}
           className={`p-2 rounded-lg ${themeClasses.button.secondary} border transition-colors`}
@@ -238,7 +242,7 @@ export function SyncPanel({ userId, onSyncComplete }: SyncPanelProps) {
           <h3 className={`font-medium ${themeClasses.text.primary} mb-4`}>
             Configuration
           </h3>
-          
+
           <div className="space-y-4">
             {/* Services */}
             <div>
@@ -285,7 +289,7 @@ export function SyncPanel({ userId, onSyncComplete }: SyncPanelProps) {
                   { key: 'syncHistory', label: 'Historique d\'écoute' },
                   { key: 'syncFavorites', label: 'Favoris' },
                   { key: 'syncLibrary', label: 'Bibliothèque' },
-                  { key: 'resolveConflicts', label: 'Résoudre automatiquement les conflits' },
+                  { key: 'resolveConflicts', label: 'Résoudre automatiquement les conflits' }
                 ].map(({ key, label }) => (
                   <label key={key} className="flex items-center space-x-2">
                     <input
@@ -442,7 +446,7 @@ export function SyncPanel({ userId, onSyncComplete }: SyncPanelProps) {
               Historique récent
             </h3>
           </div>
-          
+
           <div className="space-y-2">
             {syncHistory.slice(0, 5).map((sync) => (
               <div
@@ -475,7 +479,7 @@ export function SyncPanel({ userId, onSyncComplete }: SyncPanelProps) {
                     </div>
                   </div>
                 </div>
-                
+
                 <div className="flex space-x-1">
                   {sync.services.map((service) => (
                     <span

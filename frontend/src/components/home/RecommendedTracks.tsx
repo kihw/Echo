@@ -3,6 +3,7 @@
 import { motion } from 'framer-motion';
 import { Play, Heart, MoreHorizontal, Clock, TrendingUp, Sparkles } from 'lucide-react';
 import { useState } from 'react';
+import { log } from '@/services/logger';
 
 interface Track {
   id: string;
@@ -81,12 +82,12 @@ export function RecommendedTracks() {
   const handlePlayTrack = (trackId: string) => {
     setCurrentlyPlaying(currentlyPlaying === trackId ? null : trackId);
     // Implement play logic
-    console.log('Playing track:', trackId);
+    log.info('Playing track:', { trackId });
   };
 
   const handleLikeTrack = (trackId: string) => {
     // Implement like logic
-    console.log('Liking track:', trackId);
+    log.info('Liking track:', { trackId });
   };
 
   const getRecommendationIcon = (reason: string) => {

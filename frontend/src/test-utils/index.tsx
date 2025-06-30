@@ -10,13 +10,13 @@ const mockRouter = {
   prefetch: jest.fn(),
   back: jest.fn(),
   forward: jest.fn(),
-  refresh: jest.fn(),
+  refresh: jest.fn()
 };
 
 jest.mock('next/navigation', () => ({
   useRouter: () => mockRouter,
   useSearchParams: () => new URLSearchParams(),
-  usePathname: () => '/',
+  usePathname: () => '/'
 }));
 
 // Mock API
@@ -25,14 +25,14 @@ jest.mock('../services/api', () => ({
     get: jest.fn(),
     post: jest.fn(),
     put: jest.fn(),
-    delete: jest.fn(),
-  },
+    delete: jest.fn()
+  }
 }));
 
 // Mock user service
 jest.mock('../services/user', () => ({
   updateUser: jest.fn(),
-  getCurrentUser: jest.fn(),
+  getCurrentUser: jest.fn()
 }));
 
 // All the providers wrapper
@@ -70,7 +70,7 @@ export const createLocalStorageMock = () => {
     }),
     clear: jest.fn(() => {
       Object.keys(store).forEach(key => delete store[key]);
-    }),
+    })
   };
 };
 
@@ -106,6 +106,6 @@ Object.defineProperty(window, 'matchMedia', {
     removeListener: jest.fn(), // deprecated
     addEventListener: jest.fn(),
     removeEventListener: jest.fn(),
-    dispatchEvent: jest.fn(),
-  })),
+    dispatchEvent: jest.fn()
+  }))
 });

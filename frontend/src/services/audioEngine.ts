@@ -1,4 +1,6 @@
 // Audio Engine for handling music playback
+import { log } from './logger';
+
 export class AudioEngine {
   private audio: HTMLAudioElement | null = null;
   private context: AudioContext | null = null;
@@ -31,7 +33,7 @@ export class AudioEngine {
 
       this.setupEventListeners();
     } catch (error) {
-      console.error('Failed to initialize audio engine:', error);
+      log.error('Failed to initialize audio engine:', error);
     }
   }
 
@@ -183,7 +185,7 @@ export class AudioEngine {
   setEqualizer(frequencies: number[]) {
     // Implementation for equalizer bands
     // This would require creating multiple BiquadFilterNode instances
-    console.log('Equalizer not yet implemented:', frequencies);
+    log.info('Equalizer not yet implemented:', frequencies);
   }
 
   // Crossfade between tracks

@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-import {
-    TrendingUp, Calendar, Clock, Music, User, Award,
-    BarChart3, PieChart, Activity, Filter
+import { Clock, Music, User, Award,
+    BarChart3, Activity
 } from 'lucide-react';
-import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ResponsiveDashboardLayout } from '@/components/layout/ResponsiveDashboardLayout';
 import { useDashboard } from '@/hooks/useDashboard';
 import { ListeningChart } from '@/components/stats/ListeningChart';
@@ -18,7 +16,7 @@ import { TopTracksChart } from '@/components/stats/TopTracksChart';
 type TimePeriod = 'week' | 'month' | 'year' | 'all';
 
 export default function StatsPage() {
-    const { data: dashboardData, stats, loading, error } = useDashboard();
+    const { data: dashboardData, stats, loading, error: _error } = useDashboard();
     const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('month');
     const [currentTime, setCurrentTime] = useState('');
 

@@ -2,8 +2,12 @@
 
 import { motion } from 'framer-motion';
 import { Shuffle, Music, TrendingUp, Zap, Plus, Download } from 'lucide-react';
+import { log } from '@/services/logger';
+import { useRouter } from 'next/navigation';
 
 export function QuickActions() {
+  const router = useRouter();
+  
   const actions = [
     {
       id: 'generate',
@@ -13,7 +17,8 @@ export function QuickActions() {
       color: 'primary',
       action: () => {
         // Navigate to playlist generation
-        console.log('Generate playlist');
+        log.info('User clicked generate playlist');
+        router.push('/playlists/create?type=ai');
       }
     },
     {
@@ -24,7 +29,8 @@ export function QuickActions() {
       color: 'accent',
       action: () => {
         // Navigate to discovery
-        console.log('Discover music');
+        log.info('User clicked discover music');
+        router.push('/discover');
       }
     },
     {
@@ -35,7 +41,8 @@ export function QuickActions() {
       color: 'purple',
       action: () => {
         // Create new playlist
-        console.log('Create playlist');
+        log.info('User clicked create playlist');
+        router.push('/playlists/create');
       }
     },
     {
@@ -46,7 +53,8 @@ export function QuickActions() {
       color: 'green',
       action: () => {
         // Navigate to import
-        console.log('Import playlists');
+        log.info('User clicked import playlists');
+        router.push('/sync');
       }
     }
   ];

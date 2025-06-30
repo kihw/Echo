@@ -3,6 +3,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { dashboardService, DashboardData, DashboardStats } from '@/services/dashboard';
 import { toast } from 'react-hot-toast';
+import { log } from '@/services/logger';
 
 interface UseDashboardReturn {
   data: DashboardData | null;
@@ -31,7 +32,7 @@ export function useDashboard(): UseDashboardReturn {
       const errorMessage = err instanceof Error ? err.message : 'Erreur lors du chargement des données';
       setError(errorMessage);
       toast.error('Erreur lors du chargement du dashboard');
-      console.error('Dashboard loading error:', err);
+      log.error('Dashboard loading error:', err);
     } finally {
       setLoading(false);
     }
@@ -46,7 +47,7 @@ export function useDashboard(): UseDashboardReturn {
       const statsData = await dashboardService.getStats();
       setStats(statsData);
     } catch (err) {
-      console.error('Stats refresh error:', err);
+      log.error('Stats refresh error:', err);
       toast.error('Erreur lors du rafraîchissement des statistiques');
     }
   }, []);

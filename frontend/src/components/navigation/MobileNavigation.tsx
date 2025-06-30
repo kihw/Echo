@@ -1,11 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Menu, X, Home, Search, Music, BarChart3, Settings, User } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
+import { log } from '@/services/logger';
+import notifications from '@/services/notifications';
 
 interface MobileNavigationProps {
     isOpen: boolean;
@@ -84,7 +86,8 @@ export const MobileNavigation: React.FC<MobileNavigationProps> = ({
             await logout();
             onClose();
         } catch (error) {
-            console.error('Logout error:', error);
+            log.error('Logout error:', error);
+            notifications.error('Erreur lors de la déconnexion');
         }
     };
 

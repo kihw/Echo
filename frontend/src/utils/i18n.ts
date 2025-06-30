@@ -17,7 +17,7 @@ export const translations = {
             stats: 'Statistics',
             sync: 'Sync',
             settings: 'Settings',
-            profile: 'Profile',
+            profile: 'Profile'
         },
 
         // Authentication
@@ -30,12 +30,12 @@ export const translations = {
             confirmPassword: 'Confirm Password',
             name: 'Name',
             forgotPassword: 'Forgot Password?',
-            dontHaveAccount: "Don't have an account?",
+            dontHaveAccount: 'Don\'t have an account?',
             alreadyHaveAccount: 'Already have an account?',
             loginSuccess: 'Successfully logged in',
             loginError: 'Login failed. Please check your credentials.',
             registerSuccess: 'Account created successfully',
-            registerError: 'Registration failed. Please try again.',
+            registerError: 'Registration failed. Please try again.'
         },
 
         // Player
@@ -53,7 +53,7 @@ export const translations = {
             duration: 'Duration',
             nowPlaying: 'Now Playing',
             addToPlaylist: 'Add to Playlist',
-            removeFromPlaylist: 'Remove from Playlist',
+            removeFromPlaylist: 'Remove from Playlist'
         },
 
         // Search
@@ -69,7 +69,7 @@ export const translations = {
             albums: 'Albums',
             playlists: 'Playlists',
             duration: 'Duration',
-            service: 'Service',
+            service: 'Service'
         },
 
         // Playlists
@@ -84,7 +84,7 @@ export const translations = {
             addTracks: 'Add Tracks',
             save: 'Save',
             cancel: 'Cancel',
-            deleteConfirm: 'Are you sure you want to delete this playlist?',
+            deleteConfirm: 'Are you sure you want to delete this playlist?'
         },
 
         // Stats
@@ -100,7 +100,7 @@ export const translations = {
             allTime: 'All Time',
             hours: 'hours',
             minutes: 'minutes',
-            plays: 'plays',
+            plays: 'plays'
         },
 
         // Common
@@ -120,7 +120,7 @@ export const translations = {
             previous: 'Previous',
             settings: 'Settings',
             darkMode: 'Dark Mode',
-            lightMode: 'Light Mode',
+            lightMode: 'Light Mode'
         },
 
         // Accessibility
@@ -134,7 +134,7 @@ export const translations = {
             progressBar: 'Progress bar',
             searchInput: 'Search input',
             userMenu: 'User menu',
-            navigationMenu: 'Navigation menu',
+            navigationMenu: 'Navigation menu'
         }
     },
 
@@ -147,7 +147,7 @@ export const translations = {
             stats: 'Statistiques',
             sync: 'Synchronisation',
             settings: 'Paramètres',
-            profile: 'Profil',
+            profile: 'Profil'
         },
 
         // Authentication
@@ -160,12 +160,12 @@ export const translations = {
             confirmPassword: 'Confirmer le mot de passe',
             name: 'Nom',
             forgotPassword: 'Mot de passe oublié ?',
-            dontHaveAccount: "Vous n'avez pas de compte ?",
+            dontHaveAccount: 'Vous n\'avez pas de compte ?',
             alreadyHaveAccount: 'Vous avez déjà un compte ?',
             loginSuccess: 'Connexion réussie',
             loginError: 'Échec de la connexion. Vérifiez vos identifiants.',
             registerSuccess: 'Compte créé avec succès',
-            registerError: "Échec de l'inscription. Veuillez réessayer.",
+            registerError: 'Échec de l\'inscription. Veuillez réessayer.'
         },
 
         // Player
@@ -183,7 +183,7 @@ export const translations = {
             duration: 'Durée',
             nowPlaying: 'En cours de lecture',
             addToPlaylist: 'Ajouter à la playlist',
-            removeFromPlaylist: 'Retirer de la playlist',
+            removeFromPlaylist: 'Retirer de la playlist'
         },
 
         // Search
@@ -199,7 +199,7 @@ export const translations = {
             albums: 'Albums',
             playlists: 'Playlists',
             duration: 'Durée',
-            service: 'Service',
+            service: 'Service'
         },
 
         // Playlists
@@ -214,13 +214,13 @@ export const translations = {
             addTracks: 'Ajouter des pistes',
             save: 'Enregistrer',
             cancel: 'Annuler',
-            deleteConfirm: 'Êtes-vous sûr de vouloir supprimer cette playlist ?',
+            deleteConfirm: 'Êtes-vous sûr de vouloir supprimer cette playlist ?'
         },
 
         // Stats
         stats: {
             title: 'Vos statistiques musicales',
-            listeningTime: "Temps d'écoute",
+            listeningTime: 'Temps d\'écoute',
             topTracks: 'Top des pistes',
             topArtists: 'Top des artistes',
             topGenres: 'Top des genres',
@@ -230,7 +230,7 @@ export const translations = {
             allTime: 'Depuis toujours',
             hours: 'heures',
             minutes: 'minutes',
-            plays: 'lectures',
+            plays: 'lectures'
         },
 
         // Common
@@ -250,7 +250,7 @@ export const translations = {
             previous: 'Précédent',
             settings: 'Paramètres',
             darkMode: 'Mode sombre',
-            lightMode: 'Mode clair',
+            lightMode: 'Mode clair'
         },
 
         // Accessibility
@@ -264,7 +264,7 @@ export const translations = {
             progressBar: 'Barre de progression',
             searchInput: 'Champ de recherche',
             userMenu: 'Menu utilisateur',
-            navigationMenu: 'Menu de navigation',
+            navigationMenu: 'Menu de navigation'
         }
     }
 } as const;

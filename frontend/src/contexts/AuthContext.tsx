@@ -3,6 +3,7 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/services/api';
+import { log } from '@/services/logger';
 
 interface User {
   id: string;
@@ -67,7 +68,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const response = await api.get('/user/profile');
       setUser(response.data.user);
     } catch (error) {
-      console.error('Auth check failed:', error);
+      log.error('Auth check failed:', error);
       localStorage.removeItem('auth_token');
     } finally {
       setIsLoading(false);
@@ -190,7 +191,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     try {
       await api.post('/auth/logout');
     } catch (error) {
-      console.error('Logout API call failed:', error);
+      log.error('Logout API call failed:', error);
+      // Continue with logout even if API call fails
     } finally {
       localStorage.removeItem('auth_token');
       setUser(null);

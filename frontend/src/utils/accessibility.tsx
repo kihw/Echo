@@ -3,6 +3,8 @@
  * Conforme aux guidelines WCAG 2.1 AA
  */
 
+import React from 'react';
+
 // Hook pour gérer le focus et la navigation au clavier
 export function useFocusManagement() {
     const trapFocus = (element: HTMLElement) => {
@@ -113,7 +115,7 @@ export function Landmark({
     children,
     ...props
 }: {
-    as?: keyof JSX.IntrinsicElements;
+    as?: keyof React.JSX.IntrinsicElements;
     role?: string;
     'aria-label'?: string;
     'aria-labelledby'?: string;
@@ -217,13 +219,13 @@ export function AccessibleError({
 // Utilitaires pour les couleurs et contraste
 export const colorUtils = {
     // Vérifier le contraste des couleurs (WCAG AA = 4.5:1, AAA = 7:1)
-    getContrastRatio: (color1: string, color2: string): number => {
+    getContrastRatio: (_color1: string, _color2: string): number => {
         // Implémentation simplifiée - utiliser une vraie lib comme 'color' en prod
         return 4.5; // Placeholder
     },
 
     // Obtenir une couleur accessible basée sur l'arrière-plan
-    getAccessibleColor: (backgroundColor: string): string => {
+    getAccessibleColor: (_backgroundColor: string): string => {
         // Logique pour déterminer si utiliser du texte clair ou foncé
         return '#000000'; // Placeholder
     }
@@ -265,5 +267,3 @@ export function AccessibleButton({
         </button>
     );
 }
-
-import React from 'react';

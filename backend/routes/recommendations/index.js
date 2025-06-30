@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const recommendationService = require('../../services/recommendation');
-const auth = require('../../middleware/auth');
+const { authMiddleware } = require('../../middleware/auth');
 const logger = require('../../utils/logger');
 
 /**
@@ -12,7 +12,7 @@ const logger = require('../../utils/logger');
  * GET /api/recommendations
  * Obtenir des recommandations personnalisées
  */
-router.get('/', auth, async (req, res) => {
+router.get('/', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
     const {
@@ -61,10 +61,10 @@ router.get('/', auth, async (req, res) => {
  * GET /api/recommendations/daily
  * Mix quotidien personnalisé
  */
-router.get('/daily', auth, async (req, res) => {
+router.get('/daily', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
-    
+
     // Générer un mix équilibré pour la journée
     const recommendations = await recommendationService.generatePersonalizedRecommendations(
       userId,
@@ -99,14 +99,14 @@ router.get('/daily', auth, async (req, res) => {
  * GET /api/recommendations/mood/:mood
  * Recommandations par humeur
  */
-router.get('/mood/:mood', auth, async (req, res) => {
+router.get('/mood/:mood', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
     const { mood } = req.params;
     const { limit = 25 } = req.query;
 
     const validMoods = ['happy', 'sad', 'peaceful', 'aggressive', 'danceable', 'acoustic', 'neutral'];
-    
+
     if (!validMoods.includes(mood)) {
       return res.status(400).json({
         success: false,
@@ -157,14 +157,14 @@ router.get('/mood/:mood', auth, async (req, res) => {
  * GET /api/recommendations/context/:context
  * Recommandations par contexte d'écoute
  */
-router.get('/context/:context', auth, async (req, res) => {
+router.get('/context/:context', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
     const { context } = req.params;
     const { limit = 25 } = req.query;
 
     const validContexts = ['workout', 'study', 'party', 'chill', 'focus', 'sleep', 'commute'];
-    
+
     if (!validContexts.includes(context)) {
       return res.status(400).json({
         success: false,
@@ -215,7 +215,7 @@ router.get('/context/:context', auth, async (req, res) => {
  * POST /api/recommendations/analyze
  * Analyser les caractéristiques audio d'une track
  */
-router.post('/analyze', auth, async (req, res) => {
+router.post('/analyze', authMiddleware, async (req, res) => {
   try {
     const { trackId, service = 'spotify' } = req.body;
 
@@ -250,7 +250,7 @@ router.post('/analyze', auth, async (req, res) => {
  * GET /api/recommendations/similar/:trackId
  * Recommandations basées sur une track spécifique
  */
-router.get('/similar/:trackId', auth, async (req, res) => {
+router.get('/similar/:trackId', authMiddleware, async (req, res) => {
   try {
     const { trackId } = req.params;
     const { limit = 20, service = 'spotify' } = req.query;
@@ -289,7 +289,7 @@ router.get('/similar/:trackId', auth, async (req, res) => {
  * POST /api/recommendations/feedback
  * Enregistrer le feedback utilisateur sur une recommandation
  */
-router.post('/feedback', auth, async (req, res) => {
+router.post('/feedback', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
     const { trackId, rating, action } = req.body;

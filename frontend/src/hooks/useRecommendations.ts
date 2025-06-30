@@ -2,6 +2,8 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { recommendationService, Track, RecommendationOptions } from '../services/recommendationService';
+import { log } from '../services/logger';
+import { notify } from '../services/notifications';
 
 interface UseRecommendationsOptions extends RecommendationOptions {
   autoLoad?: boolean;
@@ -58,7 +60,7 @@ export function useRecommendations(options: UseRecommendationsOptions = {}): Use
   const likeTrack = useCallback(async (trackId: string) => {
     try {
       const isLiked = likedTracks.has(trackId);
-      
+
       // Optimistic update
       const newLikedTracks = new Set(likedTracks);
       if (isLiked) {
@@ -71,7 +73,8 @@ export function useRecommendations(options: UseRecommendationsOptions = {}): Use
       // Envoyer le feedback
       await recommendationService.sendFeedback(trackId, isLiked ? 'dislike' : 'like');
     } catch (error) {
-      console.error('Erreur lors du like:', error);
+      log.error('Erreur lors du like de track', { trackId, error }, 'useRecommendations');
+      notify.error('Erreur lors de l\'action sur la piste');
       // Revert optimistic update
       setLikedTracks(prev => {
         const reverted = new Set(prev);
@@ -89,9 +92,10 @@ export function useRecommendations(options: UseRecommendationsOptions = {}): Use
     try {
       await recommendationService.sendFeedback(trackId, 'add_to_playlist');
       // Ici, on pourrait ouvrir une modal de sélection de playlist
-      console.log('Ajouter à playlist:', trackId);
+      log.info('Track ajouté à playlist', { trackId }, 'useRecommendations');
     } catch (error) {
-      console.error('Erreur lors de l\'ajout à playlist:', error);
+      log.error('Erreur lors de l\'ajout à playlist', { trackId, error }, 'useRecommendations');
+      notify.error('Impossible d\'ajouter la piste à la playlist');
     }
   }, []);
 
@@ -99,9 +103,10 @@ export function useRecommendations(options: UseRecommendationsOptions = {}): Use
     try {
       await recommendationService.sendFeedback(trackId, 'play');
       // Ici, on pourrait déclencher la lecture via le player
-      console.log('Jouer track:', trackId);
+      log.info('Lecture de track démarrée', { trackId }, 'useRecommendations');
     } catch (error) {
-      console.error('Erreur lors de la lecture:', error);
+      log.error('Erreur lors de la lecture', { trackId, error }, 'useRecommendations');
+      notify.playback.error();
     }
   }, []);
 
@@ -109,7 +114,8 @@ export function useRecommendations(options: UseRecommendationsOptions = {}): Use
     try {
       await recommendationService.sendFeedback(trackId, 'skip');
     } catch (error) {
-      console.error('Erreur lors du skip:', error);
+      log.error('Erreur lors du skip', { trackId, error }, 'useRecommendations');
+      notify.error('Erreur lors du passage de la piste');
     }
   }, []);
 
@@ -139,7 +145,7 @@ export function useRecommendations(options: UseRecommendationsOptions = {}): Use
     addToPlaylist,
     playTrack,
     skipTrack,
-    likedTracks,
+    likedTracks
   };
 }
 
@@ -170,7 +176,7 @@ export function useDailyMix() {
     dailyMix,
     loading,
     error,
-    loadDailyMix,
+    loadDailyMix
   };
 }
 
@@ -203,7 +209,7 @@ export function useMoodRecommendations(mood: string, limit: number = 25) {
     recommendations,
     loading,
     error,
-    loadMoodRecommendations,
+    loadMoodRecommendations
   };
 }
 
@@ -236,6 +242,6 @@ export function useContextRecommendations(context: string, limit: number = 25) {
     recommendations,
     loading,
     error,
-    loadContextRecommendations,
+    loadContextRecommendations
   };
 }

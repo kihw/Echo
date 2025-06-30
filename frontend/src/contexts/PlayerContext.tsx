@@ -1,6 +1,8 @@
 'use client';
 
 import { createContext, useContext, useEffect, useState, useCallback, ReactNode } from 'react';
+import { log } from '@/services/logger';
+import notifications from '@/services/notifications';
 
 export interface Track {
   id: string;
@@ -129,7 +131,8 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
     };
 
     const handleError = (e: any) => {
-      console.error('Audio error:', e);
+      log.error('Audio playback error:', e);
+      notifications.error('Erreur de lecture audio');
       setState(prev => ({
         ...prev,
         isLoading: false,
@@ -157,6 +160,9 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
       audio.pause();
     };
   }, []);
+
+  // Audio initialization needs to be moved after next function is defined
+  // We'll handle the next reference in the callback differently
 
   // Update audio volume when state changes
   useEffect(() => {
@@ -188,7 +194,8 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
             isLoading: false
           }));
         } catch (error) {
-          console.error('Play error:', error);
+          log.error('Audio play error:', error);
+          notifications.error('Impossible de lire cette piste');
           setState(prev => ({ ...prev, isLoading: false }));
         }
       }
@@ -202,7 +209,8 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
           isPaused: false
         }));
       } catch (error) {
-        console.error('Resume error:', error);
+        log.error('Audio resume error:', error);
+        notifications.error('Erreur lors de la reprise de lecture');
       }
     }
   }, [audioElement, state.currentTrack, state.isPaused]);
@@ -356,7 +364,8 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
         // await api.post('/user/favorites', { trackId: track.id });
       }
     } catch (error) {
-      console.error('Failed to sync favorite:', error);
+      log.error('Failed to sync favorite:', error);
+      notifications.error('Erreur lors de la synchronisation des favoris');
       // Revert on error
       setFavorites(favorites);
     }
@@ -368,14 +377,14 @@ export function PlayerProvider({ children }: { children: ReactNode }) {
 
   // Update hasNext and hasPrevious
   useEffect(() => {
-    const { currentPlaylist, currentTrack, queue } = state;
+    const { currentPlaylist, currentTrack, queue, isRepeat } = state;
     let hasNext = queue.length > 0;
     let hasPrevious = false;
 
     if (currentPlaylist && currentTrack) {
       const currentIndex = currentPlaylist.tracks.findIndex(t => t.id === currentTrack.id);
-      hasNext = hasNext || currentIndex < currentPlaylist.tracks.length - 1 || state.isRepeat === 'all';
-      hasPrevious = currentIndex > 0 || state.isRepeat === 'all';
+      hasNext = hasNext || currentIndex < currentPlaylist.tracks.length - 1 || isRepeat === 'all';
+      hasPrevious = currentIndex > 0 || isRepeat === 'all';
     }
 
     setState(prev => ({ ...prev, hasNext, hasPrevious }));

@@ -10,7 +10,7 @@ interface TopArtistsProps {
   title?: string;
 }
 
-export function TopArtists({ artists = [], loading = false, title = "Top Artistes du mois" }: TopArtistsProps) {
+export function TopArtists({ artists = [], loading = false, title = 'Top Artistes du mois' }: TopArtistsProps) {
   const formatDuration = (milliseconds: number) => {
     const minutes = Math.floor(milliseconds / (1000 * 60));
     const hours = Math.floor(minutes / 60);

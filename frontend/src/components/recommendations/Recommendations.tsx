@@ -1,10 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useTheme } from '../../contexts/ThemeContext';
-import { 
-  SparklesIcon, 
-  HeartIcon, 
+import {
+  SparklesIcon,
+  HeartIcon,
   MusicalNoteIcon,
   ClockIcon,
   PlayIcon,
@@ -12,6 +12,8 @@ import {
   XMarkIcon
 } from '@heroicons/react/24/outline';
 import { HeartIcon as HeartSolidIcon } from '@heroicons/react/24/solid';
+import { log } from '@/services/logger';
+import notifications from '@/services/notifications';
 
 interface Recommendation {
   id: string;
@@ -40,10 +42,10 @@ interface RecommendationsProps {
   onTrackAdd?: (track: Recommendation) => void;
 }
 
-export function Recommendations({ 
-  userId, 
-  limit = 20, 
-  mood = null, 
+export function Recommendations({
+  userId,
+  limit = 20,
+  mood = null,
   context = null,
   onTrackPlay,
   onTrackLike,
@@ -63,25 +65,20 @@ export function Recommendations({
     text: {
       primary: resolvedTheme === 'dark' ? 'text-slate-100' : 'text-slate-900',
       secondary: resolvedTheme === 'dark' ? 'text-slate-300' : 'text-slate-600',
-      muted: resolvedTheme === 'dark' ? 'text-slate-400' : 'text-slate-500',
+      muted: resolvedTheme === 'dark' ? 'text-slate-400' : 'text-slate-500'
     },
     button: {
-      primary: `${resolvedTheme === 'dark' 
-        ? 'bg-blue-600 hover:bg-blue-700 text-white' 
+      primary: `${resolvedTheme === 'dark'
+        ? 'bg-blue-600 hover:bg-blue-700 text-white'
         : 'bg-blue-600 hover:bg-blue-700 text-white'}`,
-      secondary: `${resolvedTheme === 'dark' 
-        ? 'bg-slate-700 hover:bg-slate-600 text-slate-100 border-slate-600' 
-        : 'bg-white hover:bg-slate-50 text-slate-900 border-slate-300'}`,
+      secondary: `${resolvedTheme === 'dark'
+        ? 'bg-slate-700 hover:bg-slate-600 text-slate-100 border-slate-600'
+        : 'bg-white hover:bg-slate-50 text-slate-900 border-slate-300'}`
     },
-    hover: resolvedTheme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-slate-50',
+    hover: resolvedTheme === 'dark' ? 'hover:bg-slate-700' : 'hover:bg-slate-50'
   };
 
-  // Charger les recommandations
-  useEffect(() => {
-    loadRecommendations();
-  }, [userId, mood, context, limit]);
-
-  const loadRecommendations = async () => {
+  const loadRecommendations = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -93,8 +90,8 @@ export function Recommendations({
 
       const response = await fetch(`/api/recommendations?${params}`, {
         headers: {
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        },
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
+        }
       });
 
       if (!response.ok) {
@@ -108,7 +105,12 @@ export function Recommendations({
     } finally {
       setLoading(false);
     }
-  };
+  }, [mood, context, limit]); // Remove unused userId dependency
+
+  // Charger les recommandations au montage et lors des changements de paramètres
+  useEffect(() => {
+    loadRecommendations();
+  }, [loadRecommendations]);
 
   const refreshRecommendations = async () => {
     setRefreshing(true);
@@ -119,7 +121,7 @@ export function Recommendations({
   const handleLike = async (track: Recommendation) => {
     try {
       const isLiked = likedTracks.has(track.id);
-      
+
       // Optimistic update
       const newLikedTracks = new Set(likedTracks);
       if (isLiked) {
@@ -134,17 +136,18 @@ export function Recommendations({
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${localStorage.getItem('token')}`,
+          'Authorization': `Bearer ${localStorage.getItem('token')}`
         },
         body: JSON.stringify({
           trackId: track.id,
-          action: isLiked ? 'dislike' : 'like',
-        }),
+          action: isLiked ? 'dislike' : 'like'
+        })
       });
 
       onTrackLike?.(track);
     } catch (error) {
-      console.error('Erreur lors du like:', error);
+      log.error('Erreur lors du like:', error);
+      notifications.error('Erreur lors du like');
       // Revert optimistic update
       setLikedTracks(prev => {
         const reverted = new Set(prev);
@@ -160,19 +163,21 @@ export function Recommendations({
 
   const handlePlay = (track: Recommendation) => {
     onTrackPlay?.(track);
-    
+
     // Envoyer le feedback
     fetch('/api/recommendations/feedback', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
       },
       body: JSON.stringify({
         trackId: track.id,
-        action: 'play',
-      }),
-    }).catch(console.error);
+        action: 'play'
+      })
+    }).catch(error => {
+      log.error('Analytics tracking error:', error);
+    });
   };
 
   const getMoodColor = (mood: string) => {
@@ -183,7 +188,7 @@ export function Recommendations({
       aggressive: 'text-red-500',
       danceable: 'text-purple-500',
       acoustic: 'text-orange-500',
-      neutral: 'text-gray-500',
+      neutral: 'text-gray-500'
     };
     return colors[mood as keyof typeof colors] || 'text-gray-500';
   };
@@ -249,13 +254,12 @@ export function Recommendations({
             )}
           </div>
         </div>
-        
+
         <button
           onClick={refreshRecommendations}
           disabled={refreshing}
-          className={`p-2 rounded-lg ${themeClasses.button.secondary} border transition-colors ${
-            refreshing ? 'opacity-50 cursor-not-allowed' : ''
-          }`}
+          className={`p-2 rounded-lg ${themeClasses.button.secondary} border transition-colors ${refreshing ? 'opacity-50 cursor-not-allowed' : ''
+            }`}
         >
           <SparklesIcon className={`h-5 w-5 ${refreshing ? 'animate-spin' : ''}`} />
         </button>
@@ -334,7 +338,7 @@ export function Recommendations({
                 <div className="flex items-center space-x-2">
                   <span className={themeClasses.text.muted}>Énergie:</span>
                   <div className="w-16 h-1 bg-slate-200 dark:bg-slate-700 rounded-full">
-                    <div 
+                    <div
                       className="h-full bg-blue-500 rounded-full"
                       style={{ width: `${track.audioFeatures.energy * 100}%` }}
                     />
@@ -343,7 +347,7 @@ export function Recommendations({
                 <div className="flex items-center space-x-2">
                   <span className={themeClasses.text.muted}>Humeur:</span>
                   <div className="w-16 h-1 bg-slate-200 dark:bg-slate-700 rounded-full">
-                    <div 
+                    <div
                       className="h-full bg-green-500 rounded-full"
                       style={{ width: `${track.audioFeatures.valence * 100}%` }}
                     />
@@ -357,8 +361,8 @@ export function Recommendations({
                   onClick={() => handleLike(track)}
                   className={`
                     p-2 rounded-lg transition-colors
-                    ${likedTracks.has(track.id) 
-                      ? 'text-red-500 bg-red-50 dark:bg-red-900/20' 
+                    ${likedTracks.has(track.id)
+                      ? 'text-red-500 bg-red-50 dark:bg-red-900/20'
                       : `${themeClasses.text.muted} hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20`
                     }
                   `}
@@ -369,7 +373,7 @@ export function Recommendations({
                     <HeartIcon className="h-5 w-5" />
                   )}
                 </button>
-                
+
                 <button
                   onClick={() => onTrackAdd?.(track)}
                   className={`

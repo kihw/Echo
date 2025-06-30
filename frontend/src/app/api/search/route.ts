@@ -192,7 +192,15 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json(results);
     } catch (error) {
-        console.error('Search API error:', error);
+        // Log error properly instead of console
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        
+        // In development, also log to server console for debugging
+        if (process.env.NODE_ENV === 'development') {
+            // eslint-disable-next-line no-console
+            console.error('Search API error:', error);
+        }
+        
         return NextResponse.json(
             { error: 'Internal server error' },
             { status: 500 }

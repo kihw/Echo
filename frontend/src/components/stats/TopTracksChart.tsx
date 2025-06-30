@@ -27,7 +27,7 @@ export function TopTracksChart({ tracks, loading = false }: TopTracksChartProps)
 
     const chartData = processTracksData();
 
-    const CustomTooltip = ({ active, payload, label }: any) => {
+    const CustomTooltip = ({ active, payload, label: _label }: any) => {
         if (active && payload && payload.length) {
             const data = payload[0].payload;
             return (

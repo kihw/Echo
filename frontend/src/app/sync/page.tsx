@@ -1,12 +1,14 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '@/contexts/AuthContext';
-import { RotateCcw, Wifi, CheckCircle, AlertCircle, RefreshCw } from 'lucide-react';
+import { RotateCcw, AlertCircle, RefreshCw } from 'lucide-react';
 import ServiceCard from '@/components/sync/ServiceCard';
 import SyncProgress from '@/components/sync/SyncProgress';
 import SyncHistory from '@/components/sync/SyncHistory';
 import { useSync } from '@/hooks/useSync';
+import { log } from '@/services/logger';
+import notifications from '@/services/notifications';
 
 interface ConnectedService {
   name: string;
@@ -38,9 +40,9 @@ export default function SyncPage() {
 
   useEffect(() => {
     loadConnectedServices();
-  }, [user]);
+  }, [user, loadConnectedServices]);
 
-  const loadConnectedServices = async () => {
+  const loadConnectedServices = useCallback(async () => {
     try {
       // Simuler les services connectés depuis le profil utilisateur
       if (user?.spotifyId) {
@@ -59,9 +61,10 @@ export default function SyncPage() {
         ));
       }
     } catch (error) {
-      console.error('Erreur lors du chargement des services:', error);
+      log.error('Erreur lors du chargement des services:', error);
+      notifications.error('Erreur lors du chargement des services');
     }
-  };
+  }, [user]); // Add user as dependency
 
   const connectService = (serviceName: string) => {
     // Rediriger vers la page d'auth OAuth du service
@@ -95,7 +98,8 @@ export default function SyncPage() {
         window.location.reload();
       }
     } catch (error) {
-      console.error('Dev login failed:', error);
+      log.error('Dev login failed:', error);
+      notifications.error('Erreur de connexion en mode développement');
     }
   };
 

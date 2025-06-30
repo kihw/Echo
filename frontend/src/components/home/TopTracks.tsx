@@ -10,7 +10,7 @@ interface TopTracksProps {
   title?: string;
 }
 
-export function TopTracks({ tracks = [], loading = false, title = "Top Tracks du mois" }: TopTracksProps) {
+export function TopTracks({ tracks = [], loading = false, title = 'Top Tracks du mois' }: TopTracksProps) {
   const formatDuration = (milliseconds: number) => {
     const minutes = Math.floor(milliseconds / (1000 * 60));
     const seconds = Math.floor((milliseconds % (1000 * 60)) / 1000);

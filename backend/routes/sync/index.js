@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const unifiedSyncService = require('../../services/unifiedSync');
-const auth = require('../../middleware/auth');
+const { authMiddleware } = require('../../middleware/auth');
 const logger = require('../../utils/logger');
 
 /**
@@ -12,7 +12,7 @@ const logger = require('../../utils/logger');
  * POST /api/sync/full
  * Lance une synchronisation complète
  */
-router.post('/full', auth, async (req, res) => {
+router.post('/full', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
     const {
@@ -37,7 +37,7 @@ router.post('/full', auth, async (req, res) => {
 
     // Lancer la synchronisation en arrière-plan
     const syncPromise = unifiedSyncService.performFullSync(userId, options);
-    
+
     if (dryRun) {
       // En mode dry-run, attendre le résultat
       const result = await syncPromise;
@@ -48,7 +48,7 @@ router.post('/full', auth, async (req, res) => {
     } else {
       // En mode normal, retourner immédiatement l'ID de sync
       const syncId = syncPromise.syncId || `sync_${Date.now()}`;
-      
+
       // Ne pas attendre la fin de la synchronisation
       syncPromise.catch(error => {
         logger.error(`Synchronisation ${syncId} échouée:`, error);
@@ -77,7 +77,7 @@ router.post('/full', auth, async (req, res) => {
  * POST /api/sync/playlists
  * Synchronise uniquement les playlists
  */
-router.post('/playlists', auth, async (req, res) => {
+router.post('/playlists', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
     const {
@@ -122,7 +122,7 @@ router.post('/playlists', auth, async (req, res) => {
  * POST /api/sync/favorites
  * Synchronise uniquement les favoris
  */
-router.post('/favorites', auth, async (req, res) => {
+router.post('/favorites', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
     const {
@@ -163,7 +163,7 @@ router.post('/favorites', auth, async (req, res) => {
  * GET /api/sync/status/:syncId
  * Obtenir le statut d'une synchronisation
  */
-router.get('/status/:syncId', auth, async (req, res) => {
+router.get('/status/:syncId', authMiddleware, async (req, res) => {
   try {
     const { syncId } = req.params;
     const userId = req.user.id;
@@ -196,7 +196,7 @@ router.get('/status/:syncId', auth, async (req, res) => {
  * GET /api/sync/history
  * Obtenir l'historique des synchronisations
  */
-router.get('/history', auth, async (req, res) => {
+router.get('/history', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
     const {
@@ -233,7 +233,7 @@ router.get('/history', auth, async (req, res) => {
  * GET /api/sync/conflicts
  * Obtenir les conflits de synchronisation non résolus
  */
-router.get('/conflicts', auth, async (req, res) => {
+router.get('/conflicts', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
     const { resolved = false } = req.query;
@@ -261,7 +261,7 @@ router.get('/conflicts', auth, async (req, res) => {
  * POST /api/sync/conflicts/:conflictId/resolve
  * Résoudre manuellement un conflit
  */
-router.post('/conflicts/:conflictId/resolve', auth, async (req, res) => {
+router.post('/conflicts/:conflictId/resolve', authMiddleware, async (req, res) => {
   try {
     const { conflictId } = req.params;
     const userId = req.user.id;
@@ -275,9 +275,9 @@ router.post('/conflicts/:conflictId/resolve', auth, async (req, res) => {
     }
 
     const result = await unifiedSyncService.resolveConflict(
-      conflictId, 
-      userId, 
-      resolution, 
+      conflictId,
+      userId,
+      resolution,
       strategy
     );
 
@@ -299,7 +299,7 @@ router.post('/conflicts/:conflictId/resolve', auth, async (req, res) => {
  * GET /api/sync/mappings
  * Obtenir les mappings entre services
  */
-router.get('/mappings', auth, async (req, res) => {
+router.get('/mappings', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
     const { type = 'all', service = null } = req.query;
@@ -333,7 +333,7 @@ router.get('/mappings', auth, async (req, res) => {
  * POST /api/sync/schedule
  * Programmer une synchronisation automatique
  */
-router.post('/schedule', auth, async (req, res) => {
+router.post('/schedule', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
     const {
@@ -380,7 +380,7 @@ router.post('/schedule', auth, async (req, res) => {
  * DELETE /api/sync/schedule
  * Annuler la synchronisation automatique
  */
-router.delete('/schedule', auth, async (req, res) => {
+router.delete('/schedule', authMiddleware, async (req, res) => {
   try {
     const userId = req.user.id;
 

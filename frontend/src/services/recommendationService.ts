@@ -33,7 +33,7 @@ class RecommendationService {
 
   async getPersonalizedRecommendations(options: RecommendationOptions = {}): Promise<Track[]> {
     const params = new URLSearchParams();
-    
+
     if (options.limit) params.append('limit', options.limit.toString());
     if (options.mood) params.append('mood', options.mood);
     if (options.context) params.append('context', options.context);
@@ -50,8 +50,8 @@ class RecommendationService {
     const response = await fetch(`${this.baseUrl}?${params}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     });
 
     if (!response.ok) {
@@ -66,8 +66,8 @@ class RecommendationService {
     const response = await fetch(`${this.baseUrl}/daily`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     });
 
     if (!response.ok) {
@@ -82,8 +82,8 @@ class RecommendationService {
     const response = await fetch(`${this.baseUrl}/mood/${mood}?limit=${limit}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     });
 
     if (!response.ok) {
@@ -98,8 +98,8 @@ class RecommendationService {
     const response = await fetch(`${this.baseUrl}/context/${context}?limit=${limit}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     });
 
     if (!response.ok) {
@@ -114,8 +114,8 @@ class RecommendationService {
     const response = await fetch(`${this.baseUrl}/similar/${trackId}?service=${service}&limit=${limit}`, {
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
-      },
+        'Content-Type': 'application/json'
+      }
     });
 
     if (!response.ok) {
@@ -131,9 +131,9 @@ class RecommendationService {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ trackId, service }),
+      body: JSON.stringify({ trackId, service })
     });
 
     if (!response.ok) {
@@ -149,9 +149,9 @@ class RecommendationService {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ trackId, action, rating }),
+      body: JSON.stringify({ trackId, action, rating })
     });
 
     if (!response.ok) {
@@ -168,7 +168,7 @@ class RecommendationService {
       aggressive: 'text-red-500',
       danceable: 'text-purple-500',
       acoustic: 'text-orange-500',
-      neutral: 'text-gray-500',
+      neutral: 'text-gray-500'
     };
     return colors[mood as keyof typeof colors] || 'text-gray-500';
   }
@@ -182,7 +182,7 @@ class RecommendationService {
       focus: '🎯',
       sleep: '😴',
       commute: '🚗',
-      general: '🎵',
+      general: '🎵'
     };
     return icons[context as keyof typeof icons] || '🎵';
   }
@@ -205,7 +205,7 @@ class RecommendationService {
     const danceabilityDiff = Math.abs(features1.danceability - features2.danceability);
 
     const distance = Math.sqrt(energyDiff ** 2 + valenceDiff ** 2 + danceabilityDiff ** 2);
-    
+
     // Convertir en score de similarité (0-1)
     return Math.max(0, 1 - distance / Math.sqrt(3));
   }

@@ -10,7 +10,7 @@ jest.mock('../../services/api', () => ({
     register: jest.fn(),
     logout: jest.fn(),
     getCurrentUser: jest.fn(),
-    refreshToken: jest.fn(),
+    refreshToken: jest.fn()
 }));
 
 const mockApiCalls = require('../../services/api');
@@ -19,17 +19,20 @@ const createWrapper = () => {
     const queryClient = new QueryClient({
         defaultOptions: {
             queries: { retry: false },
-            mutations: { retry: false },
-        },
+            mutations: { retry: false }
+        }
     });
 
-    return ({ children }: { children: React.ReactNode }) => (
+    const Wrapper = ({ children }: { children: React.ReactNode }) => (
         <QueryClientProvider client={queryClient}>
             <AuthProvider>
                 {children}
             </AuthProvider>
         </QueryClientProvider>
     );
+    
+    Wrapper.displayName = 'TestWrapper';
+    return Wrapper;
 };
 
 describe('useAuth Hook', () => {
@@ -40,7 +43,7 @@ describe('useAuth Hook', () => {
 
     it('initializes with correct default state', () => {
         const { result } = renderHook(() => useAuth(), {
-            wrapper: createWrapper(),
+            wrapper: createWrapper()
         });
 
         expect(result.current.user).toBeNull();
@@ -52,16 +55,16 @@ describe('useAuth Hook', () => {
         const mockUser = {
             id: '1',
             email: 'test@example.com',
-            name: 'Test User',
+            name: 'Test User'
         };
 
         mockApiCalls.login.mockResolvedValue({
             user: mockUser,
-            token: 'mock-token',
+            token: 'mock-token'
         });
 
         const { result } = renderHook(() => useAuth(), {
-            wrapper: createWrapper(),
+            wrapper: createWrapper()
         });
 
         await act(async () => {
@@ -77,7 +80,7 @@ describe('useAuth Hook', () => {
         mockApiCalls.login.mockRejectedValue(new Error('Invalid credentials'));
 
         const { result } = renderHook(() => useAuth(), {
-            wrapper: createWrapper(),
+            wrapper: createWrapper()
         });
 
         await act(async () => {
@@ -96,16 +99,16 @@ describe('useAuth Hook', () => {
         const mockUser = {
             id: '1',
             email: 'newuser@example.com',
-            name: 'New User',
+            name: 'New User'
         };
 
         mockApiCalls.register.mockResolvedValue({
             user: mockUser,
-            token: 'mock-token',
+            token: 'mock-token'
         });
 
         const { result } = renderHook(() => useAuth(), {
-            wrapper: createWrapper(),
+            wrapper: createWrapper()
         });
 
         await act(async () => {
@@ -121,16 +124,16 @@ describe('useAuth Hook', () => {
         const mockUser = {
             id: '1',
             email: 'test@example.com',
-            name: 'Test User',
+            name: 'Test User'
         };
 
         mockApiCalls.login.mockResolvedValue({
             user: mockUser,
-            token: 'mock-token',
+            token: 'mock-token'
         });
 
         const { result } = renderHook(() => useAuth(), {
-            wrapper: createWrapper(),
+            wrapper: createWrapper()
         });
 
         // Login first
@@ -152,19 +155,19 @@ describe('useAuth Hook', () => {
         const mockUser = {
             id: '1',
             email: 'test@example.com',
-            name: 'Test User',
+            name: 'Test User'
         };
 
         mockApiCalls.refreshToken.mockResolvedValue({
             user: mockUser,
-            token: 'new-mock-token',
+            token: 'new-mock-token'
         });
 
         // Set initial token
         localStorage.setItem('auth-token', 'old-token');
 
         const { result } = renderHook(() => useAuth(), {
-            wrapper: createWrapper(),
+            wrapper: createWrapper()
         });
 
         await act(async () => {
@@ -180,14 +183,14 @@ describe('useAuth Hook', () => {
         const mockUser = {
             id: '1',
             email: 'test@example.com',
-            name: 'Test User',
+            name: 'Test User'
         };
 
         mockApiCalls.getCurrentUser.mockResolvedValue(mockUser);
         localStorage.setItem('auth-token', 'existing-token');
 
         const { result } = renderHook(() => useAuth(), {
-            wrapper: createWrapper(),
+            wrapper: createWrapper()
         });
 
         // Wait for initial load
@@ -204,7 +207,7 @@ describe('useAuth Hook', () => {
         localStorage.setItem('auth-token', 'invalid-token');
 
         const { result } = renderHook(() => useAuth(), {
-            wrapper: createWrapper(),
+            wrapper: createWrapper()
         });
 
         // Wait for initial load
@@ -226,7 +229,7 @@ describe('useAuth Hook', () => {
         );
 
         const { result } = renderHook(() => useAuth(), {
-            wrapper: createWrapper(),
+            wrapper: createWrapper()
         });
 
         // Start login

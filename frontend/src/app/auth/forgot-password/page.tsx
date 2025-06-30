@@ -3,6 +3,8 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { api } from '@/services/api';
+import { log } from '@/services/logger';
+import notifications from '@/services/notifications';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -18,8 +20,8 @@ export default function ForgotPasswordPage() {
       await api.post('/auth/forgot-password', { email });
       setIsSubmitted(true);
     } catch (error: any) {
-      console.error('Failed to send reset email:', error);
-      alert(error.response?.data?.message || 'Erreur lors de l\'envoi de l\'email de réinitialisation');
+      log.error('Failed to send reset email:', error);
+      notifications.error(error.response?.data?.message || 'Erreur lors de l\'envoi de l\'email de réinitialisation');
     } finally {
       setIsLoading(false);
     }

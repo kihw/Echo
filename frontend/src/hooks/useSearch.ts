@@ -5,6 +5,7 @@ import { useDebounce } from '@/utils/debounce';
 import { searchCache, CACHE_KEYS, CACHE_TTL } from '@/utils/cache';
 import { api } from '@/services/api';
 import { toast } from 'react-hot-toast';
+import { log } from '@/services/logger';
 
 export interface SearchResult {
     id: string;
@@ -132,7 +133,7 @@ export function useSearch(options: UseSearchOptions = {}): UseSearchReturn {
 
             return searchResult;
         } catch (error) {
-            console.error('Search error:', error);
+            log.error('Search error:', error);
             throw error;
         }
     }, [buildCacheKey]);

@@ -34,7 +34,7 @@ export const FullScreenPlayer: React.FC<FullScreenPlayerProps> = ({ isOpen, onCl
         isShuffle,
         volume,
         duration,
-        play,
+        play: _play,
         pause,
         resume,
         next,

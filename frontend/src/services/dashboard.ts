@@ -1,5 +1,6 @@
 import { api } from './api';
 import { dashboardCache, CACHE_KEYS, CACHE_TTL } from '@/utils/cache';
+import { log } from './logger';
 
 export interface DashboardStats {
   totalPlaylists: number;
@@ -70,7 +71,7 @@ class DashboardService {
       },
       { ttl: CACHE_TTL.DASHBOARD }
     ).catch(error => {
-      console.error('Erreur lors de la récupération des données dashboard:', error);
+      log.error('Erreur lors de la récupération des données dashboard:', error);
       return this.getDefaultDashboardData();
     });
   }
@@ -84,7 +85,7 @@ class DashboardService {
       },
       { ttl: CACHE_TTL.STATISTICS }
     ).catch(error => {
-      console.error('Erreur lors de la récupération des stats:', error);
+      log.error('Erreur lors de la récupération des stats:', error);
       return {
         totalPlaylists: 0,
         totalTracks: 0,
@@ -100,7 +101,7 @@ class DashboardService {
       const response = await api.get(`/playlists/recent?limit=${limit}`);
       return response.data;
     } catch (error) {
-      console.error('Erreur lors de la récupération des playlists récentes:', error);
+      log.error('Erreur lors de la récupération des playlists récentes:', error);
       return [];
     }
   }
@@ -110,7 +111,7 @@ class DashboardService {
       const response = await api.get(`/user/history?limit=${limit}`);
       return response.data;
     } catch (error) {
-      console.error('Erreur lors de la récupération de l\'historique:', error);
+      log.error('Erreur lors de la récupération de l\'historique:', error);
       return [];
     }
   }
@@ -120,7 +121,7 @@ class DashboardService {
       const response = await api.get(`/user/top-tracks?period=${period}&limit=${limit}`);
       return response.data;
     } catch (error) {
-      console.error('Erreur lors de la récupération des top tracks:', error);
+      log.error('Erreur lors de la récupération des top tracks:', error);
       return [];
     }
   }
@@ -130,7 +131,7 @@ class DashboardService {
       const response = await api.get(`/user/top-artists?period=${period}&limit=${limit}`);
       return response.data;
     } catch (error) {
-      console.error('Erreur lors de la récupération des top artists:', error);
+      log.error('Erreur lors de la récupération des top artists:', error);
       return [];
     }
   }
@@ -140,7 +141,7 @@ class DashboardService {
       const response = await api.get(`/recommendations?limit=${limit}`);
       return response.data;
     } catch (error) {
-      console.error('Erreur lors de la récupération des recommandations:', error);
+      log.error('Erreur lors de la récupération des recommandations:', error);
       return [];
     }
   }

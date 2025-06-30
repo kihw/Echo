@@ -12,6 +12,7 @@ import { WelcomeHero } from '@/components/home/WelcomeHero';
 import { QuickActions } from '@/components/home/QuickActions';
 import { RecentPlaylists } from '@/components/home/RecentPlaylists';
 import { ListeningStats } from '@/components/home/ListeningStats';
+import { log } from '@/services/logger';
 
 export default function DashboardPage() {
   const { user, isLoading } = useAuth();
@@ -31,19 +32,19 @@ export default function DashboardPage() {
   }
 
   const handleTrackPlay = (track: any) => {
-    console.log('Lecture de la track:', track);
+    log.info('Lecture de la track démarrée', { track }, 'Dashboard');
   };
 
   const handleTrackLike = (track: any) => {
-    console.log('Like track:', track);
+    log.info('Track likée', { track }, 'Dashboard');
   };
 
   const handleTrackAdd = (track: any) => {
-    console.log('Ajouter track à playlist:', track);
+    log.info('Track ajoutée à playlist', { track }, 'Dashboard');
   };
 
   const handleSyncComplete = (result: any) => {
-    console.log('Synchronisation terminée:', result);
+    log.info('Synchronisation terminée', { result }, 'Dashboard');
   };
 
   const themeClasses = {
@@ -51,7 +52,7 @@ export default function DashboardPage() {
     card: `${resolvedTheme === 'dark' ? 'bg-slate-800 border-slate-700' : 'bg-white border-slate-200'}`,
     text: {
       primary: resolvedTheme === 'dark' ? 'text-slate-100' : 'text-slate-900',
-      secondary: resolvedTheme === 'dark' ? 'text-slate-300' : 'text-slate-600',
+      secondary: resolvedTheme === 'dark' ? 'text-slate-300' : 'text-slate-600'
     }
   };
 
@@ -63,7 +64,7 @@ export default function DashboardPage() {
           <WelcomeHero />
           <ThemeToggle variant="button" />
         </div>
-        
+
         <QuickActions />
 
         {/* Currently Playing */}
@@ -98,7 +99,7 @@ export default function DashboardPage() {
                 onTrackAdd={handleTrackAdd}
               />
             </div>
-            
+
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
               <RecentPlaylists />
               <ListeningStats />

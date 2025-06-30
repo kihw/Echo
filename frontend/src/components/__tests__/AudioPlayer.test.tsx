@@ -29,7 +29,7 @@ Object.defineProperty(window, 'HTMLMediaElement', {
     }
 });
 
-const mockTrack = {
+const _mockTrack = {
     id: '1',
     title: 'Test Song',
     artist: 'Test Artist',

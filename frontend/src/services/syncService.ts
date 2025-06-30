@@ -1,6 +1,7 @@
 /**
  * Service client pour la synchronisation
  */
+import { log } from './logger';
 
 interface SyncOptions {
   services?: string[];
@@ -59,7 +60,7 @@ class SyncService {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         services: ['spotify', 'deezer', 'ytmusic'],
@@ -69,8 +70,8 @@ class SyncService {
         syncLibrary: true,
         resolveConflicts: true,
         dryRun: false,
-        ...options,
-      }),
+        ...options
+      })
     });
 
     if (!response.ok) {
@@ -81,7 +82,7 @@ class SyncService {
     return data.data;
   }
 
-  async syncPlaylists(options: { 
+  async syncPlaylists(options: {
     services?: string[];
     playlistIds?: string[];
     bidirectional?: boolean;
@@ -91,14 +92,14 @@ class SyncService {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         services: ['spotify', 'deezer', 'ytmusic'],
         bidirectional: true,
         resolveConflicts: true,
-        ...options,
-      }),
+        ...options
+      })
     });
 
     if (!response.ok) {
@@ -117,13 +118,13 @@ class SyncService {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         services: ['spotify', 'deezer', 'ytmusic'],
         strategy: 'union',
-        ...options,
-      }),
+        ...options
+      })
     });
 
     if (!response.ok) {
@@ -137,8 +138,8 @@ class SyncService {
   async getSyncStatus(syncId: string): Promise<SyncStatus | null> {
     const response = await fetch(`${this.baseUrl}/status/${syncId}`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
     });
 
     if (response.status === 404) {
@@ -167,8 +168,8 @@ class SyncService {
 
     const response = await fetch(`${this.baseUrl}/history?${params}`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
     });
 
     if (!response.ok) {
@@ -182,8 +183,8 @@ class SyncService {
   async getConflicts(resolved: boolean = false): Promise<Conflict[]> {
     const response = await fetch(`${this.baseUrl}/conflicts?resolved=${resolved}`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
     });
 
     if (!response.ok) {
@@ -199,9 +200,9 @@ class SyncService {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ resolution, strategy }),
+      body: JSON.stringify({ resolution, strategy })
     });
 
     if (!response.ok) {
@@ -219,8 +220,8 @@ class SyncService {
 
     const response = await fetch(`${this.baseUrl}/mappings?${params}`, {
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
     });
 
     if (!response.ok) {
@@ -241,13 +242,13 @@ class SyncService {
       method: 'POST',
       headers: {
         'Authorization': `Bearer ${localStorage.getItem('token')}`,
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
       },
       body: JSON.stringify({
         services: ['spotify', 'deezer', 'ytmusic'],
         options: {},
-        ...schedule,
-      }),
+        ...schedule
+      })
     });
 
     if (!response.ok) {
@@ -262,8 +263,8 @@ class SyncService {
     const response = await fetch(`${this.baseUrl}/schedule`, {
       method: 'DELETE',
       headers: {
-        'Authorization': `Bearer ${localStorage.getItem('token')}`,
-      },
+        'Authorization': `Bearer ${localStorage.getItem('token')}`
+      }
     });
 
     if (!response.ok) {
@@ -292,7 +293,7 @@ class SyncService {
       spotify: '🎧',
       deezer: '🎵',
       ytmusic: '📺',
-      lidarr: '📀',
+      lidarr: '📀'
     };
     return icons[service as keyof typeof icons] || '🎵';
   }
@@ -328,7 +329,7 @@ class SyncService {
           setTimeout(poll, 2000);
         }
       } catch (error) {
-        console.error('Erreur lors du polling:', error);
+        log.error('Erreur lors du polling de synchronisation:', error);
       }
     };
 

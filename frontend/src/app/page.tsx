@@ -3,7 +3,6 @@
 import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Play, Music, Shuffle, Heart, TrendingUp, Clock, Zap } from 'lucide-react';
-import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ResponsiveDashboardLayout } from '@/components/layout/ResponsiveDashboardLayout';
 import { WelcomeHero } from '@/components/home/WelcomeHero';
 import { QuickActions } from '@/components/home/QuickActions';
@@ -19,7 +18,7 @@ import { useDashboard } from '@/hooks/useDashboard';
 export default function HomePage() {
   const { user, isAuthenticated } = useAuth();
   const { currentTrack, isPlaying } = usePlayer();
-  const { data: dashboardData, stats, loading: dashboardLoading, error } = useDashboard();
+  const { data: dashboardData, stats, loading: dashboardLoading, error: _error } = useDashboard();
   const [currentTime, setCurrentTime] = useState('');
 
   useEffect(() => {
@@ -177,7 +176,7 @@ export default function HomePage() {
                   </h3>
                 </div>
                 <div className="card-body space-y-4">
-                  {dashboardData?.listeningHistory?.slice(0, 3).map((activity, index) => (
+                  {dashboardData?.listeningHistory?.slice(0, 3).map((activity, _index) => (
                     <div key={activity.id} className="flex items-center space-x-3">
                       <div className="p-2 bg-secondary-100 rounded-lg">
                         <Music className="w-4 h-4 text-secondary-600" />

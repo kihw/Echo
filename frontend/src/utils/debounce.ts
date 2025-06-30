@@ -2,6 +2,8 @@
  * Debounce utility functions for performance optimization
  */
 
+import React, { useState, useEffect } from 'react';
+
 /**
  * Creates a debounced function that delays invoking func until after wait milliseconds
  * have elapsed since the last time the debounced function was invoked.
@@ -11,7 +13,7 @@ export function debounce<T extends (...args: any[]) => any>(
     wait: number,
     immediate?: boolean
 ): (...args: Parameters<T>) => void {
-    let timeout: NodeJS.Timeout | null = null;
+    let timeout: ReturnType<typeof setTimeout> | null = null;
 
     return function executedFunction(...args: Parameters<T>) {
         const later = () => {
@@ -41,7 +43,7 @@ export function throttle<T extends (...args: any[]) => any>(
     wait: number
 ): (...args: Parameters<T>) => void {
     let inThrottle: boolean;
-    let lastFunc: NodeJS.Timeout;
+    let lastFunc: ReturnType<typeof setTimeout>;
     let lastRan: number;
 
     return function (this: any, ...args: Parameters<T>) {
@@ -64,8 +66,6 @@ export function throttle<T extends (...args: any[]) => any>(
 /**
  * Hook for using debounced values in React components
  */
-import { useState, useEffect } from 'react';
-
 export function useDebounce<T>(value: T, delay: number): T {
     const [debouncedValue, setDebouncedValue] = useState<T>(value);
 
@@ -99,7 +99,7 @@ export function useDebouncedCallback<T extends (...args: any[]) => any>(
                 clearTimeout((debouncedCallback as any).timeout);
             }
         };
-    }, deps);
+    }, [debouncedCallback, ...deps]);
 
     return debouncedCallback;
 }
@@ -121,7 +121,7 @@ export function useThrottledCallback<T extends (...args: any[]) => any>(
                 clearTimeout((throttledCallback as any).lastFunc);
             }
         };
-    }, deps);
+    }, [throttledCallback, ...deps]);
 
     return throttledCallback;
 }
@@ -130,7 +130,7 @@ export function useThrottledCallback<T extends (...args: any[]) => any>(
  * Advanced debounce with cancellation support
  */
 export class AdvancedDebouncer<T extends (...args: any[]) => any> {
-    private timeout: NodeJS.Timeout | null = null;
+    private timeout: ReturnType<typeof setTimeout> | null = null;
     private promise: Promise<ReturnType<T>> | null = null;
     private resolve: ((value: ReturnType<T>) => void) | null = null;
     private reject: ((reason: any) => void) | null = null;

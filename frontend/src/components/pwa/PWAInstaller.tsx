@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Download, X, Smartphone } from 'lucide-react';
+import { log } from '@/services/logger';
 
 interface BeforeInstallPromptEvent extends Event {
     prompt(): Promise<void>;
@@ -63,16 +64,16 @@ export const PWAInstaller: React.FC = () => {
             const choiceResult = await deferredPrompt.userChoice;
 
             if (choiceResult.outcome === 'accepted') {
-                console.log('User accepted the install prompt');
+                log.info('User accepted PWA install prompt');
             } else {
-                console.log('User dismissed the install prompt');
+                log.info('User dismissed PWA install prompt');
                 localStorage.setItem('pwa-install-dismissed', 'true');
             }
 
             setDeferredPrompt(null);
             setShowInstallBanner(false);
         } catch (error) {
-            console.error('Install prompt failed:', error);
+            log.error('PWA install prompt failed:', error);
         }
     };
 

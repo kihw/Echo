@@ -28,7 +28,7 @@ class RecommendationService {
   async analyzeAudioFeatures(trackId, service = 'spotify') {
     try {
       const cacheKey = `${service}:${trackId}`;
-      
+
       // Vérifier le cache
       if (this.audioFeaturesCache.has(cacheKey)) {
         return this.audioFeaturesCache.get(cacheKey);
@@ -52,7 +52,7 @@ class RecommendationService {
 
       // Mettre en cache
       this.audioFeaturesCache.set(cacheKey, features);
-      
+
       return features;
     } catch (error) {
       logger.error('Erreur lors de l\'analyse des caractéristiques audio:', error);
@@ -85,23 +85,23 @@ class RecommendationService {
       key: audioFeatures.key,
       mode: audioFeatures.mode,
       duration_ms: audioFeatures.duration_ms,
-      
+
       // Métadonnées enrichies
       popularity: trackInfo.popularity,
       explicit: trackInfo.explicit,
-      
+
       // Genre et style (si disponible)
       genres: this.extractGenresFromArtists(trackInfo.artists),
-      
+
       // Score d'énergie calculé
       energyScore: this.calculateEnergyScore(audioFeatures),
-      
+
       // Mood calculé
       mood: this.calculateMood(audioFeatures),
-      
+
       // Contexte d'écoute suggéré
       contexts: this.suggestListeningContexts(audioFeatures),
-      
+
       // Timestamp d'analyse
       analyzedAt: new Date().toISOString()
     };
@@ -174,7 +174,7 @@ class RecommendationService {
 
     // Normaliser le loudness (-60 à 0 dB)
     const normalizedLoudness = Math.max(0, (features.loudness + 60) / 60);
-    
+
     // Normaliser le tempo (60-200 BPM typique)
     const normalizedTempo = Math.min(1, Math.max(0, (features.tempo - 60) / 140));
 
@@ -199,7 +199,7 @@ class RecommendationService {
     if (valence < 0.4 && energy < 0.4) return 'sad';
     if (danceability > 0.7) return 'danceable';
     if (acousticness > 0.7) return 'acoustic';
-    
+
     return 'neutral';
   }
 
@@ -208,31 +208,31 @@ class RecommendationService {
    */
   suggestListeningContexts(features) {
     const contexts = [];
-    
+
     if (features.energy > 0.7 && features.danceability > 0.6) {
       contexts.push('party', 'workout');
     }
-    
+
     if (features.valence > 0.6 && features.energy > 0.5) {
       contexts.push('mood_booster');
     }
-    
+
     if (features.acousticness > 0.6 && features.energy < 0.5) {
       contexts.push('chill', 'study');
     }
-    
+
     if (features.instrumentalness > 0.5) {
       contexts.push('focus', 'background');
     }
-    
+
     if (features.liveness > 0.3) {
       contexts.push('live_music');
     }
-    
+
     if (contexts.length === 0) {
       contexts.push('general');
     }
-    
+
     return contexts;
   }
 
@@ -241,13 +241,13 @@ class RecommendationService {
    */
   extractGenresFromArtists(artists) {
     const genres = new Set();
-    
+
     artists.forEach(artist => {
       if (artist.genres && Array.isArray(artist.genres)) {
         artist.genres.forEach(genre => genres.add(genre));
       }
     });
-    
+
     return Array.from(genres);
   }
 
@@ -270,40 +270,40 @@ class RecommendationService {
 
       // Analyser l'historique d'écoute
       const userProfile = await this.buildUserProfile(userId);
-      
+
       // Obtenir des recommandations de différentes sources
       const recommendations = [];
-      
+
       // 1. Recommandations basées sur les caractéristiques audio
       const audioBasedRecs = await this.getAudioBasedRecommendations(userProfile, limit * 0.4);
       recommendations.push(...audioBasedRecs);
-      
+
       // 2. Recommandations basées sur les artistes similaires
       if (includeSimilarArtists) {
         const artistBasedRecs = await this.getArtistBasedRecommendations(userProfile, limit * 0.3);
         recommendations.push(...artistBasedRecs);
       }
-      
+
       // 3. Nouvelles sorties dans les genres aimés
       if (includeNewReleases) {
         const newReleaseRecs = await this.getNewReleaseRecommendations(userProfile, limit * 0.2);
         recommendations.push(...newReleaseRecs);
       }
-      
+
       // 4. Recommandations de découverte
       const discoveryRecs = await this.getDiscoveryRecommendations(userProfile, limit * 0.1);
       recommendations.push(...discoveryRecs);
-      
+
       // Diversifier et filtrer
       const finalRecommendations = this.diversifyRecommendations(
-        recommendations, 
-        limit, 
+        recommendations,
+        limit,
         diversityFactor
       );
-      
+
       // Filtrer par mood et contexte si spécifiés
       return this.filterByMoodAndContext(finalRecommendations, mood, context);
-      
+
     } catch (error) {
       logger.error('Erreur lors de la génération des recommandations:', error);
       throw error;
@@ -371,17 +371,17 @@ class RecommendationService {
     // Algorithme de diversification simple
     const diverse = [];
     const used = new Set();
-    
+
     recommendations.forEach(rec => {
       if (diverse.length >= limit) return;
-      
+
       const key = `${rec.artist}-${rec.genre}`;
       if (!used.has(key) || Math.random() < diversityFactor) {
         diverse.push(rec);
         used.add(key);
       }
     });
-    
+
     return diverse;
   }
 
@@ -390,7 +390,7 @@ class RecommendationService {
    */
   filterByMoodAndContext(recommendations, mood, context) {
     if (!mood && !context) return recommendations;
-    
+
     return recommendations.filter(rec => {
       if (mood && rec.mood !== mood) return false;
       if (context && !rec.contexts.includes(context)) return false;

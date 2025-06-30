@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Play, MoreHorizontal, Music, Clock, Heart } from 'lucide-react';
+import { Play, MoreHorizontal, Music, Clock } from 'lucide-react';
 import { RecentPlaylist } from '@/services/dashboard';
 
 interface RecentPlaylistsProps {

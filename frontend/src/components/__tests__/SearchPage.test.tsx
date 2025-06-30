@@ -10,7 +10,7 @@ jest.mock('../../services/api', () => ({
     searchTracks: jest.fn(),
     searchArtists: jest.fn(),
     searchAlbums: jest.fn(),
-    searchPlaylists: jest.fn(),
+    searchPlaylists: jest.fn()
 }));
 
 const mockSearchResults = {
@@ -53,8 +53,8 @@ const mockSearchResults = {
 const createTestQueryClient = () => new QueryClient({
     defaultOptions: {
         queries: { retry: false },
-        mutations: { retry: false },
-    },
+        mutations: { retry: false }
+    }
 });
 
 const renderWithProviders = (ui: React.ReactElement) => {
@@ -94,8 +94,8 @@ describe('SearchPage', () => {
 
     it('performs search when typing in search box', async () => {
         const user = userEvent.setup();
-        const mockSearchTracks = require('../../services/api').searchTracks;
-        mockSearchTracks.mockResolvedValue(mockSearchResults);
+        const mockSearch = require('../../services/api').musicApi.search;
+        mockSearch.mockResolvedValue({ data: mockSearchResults });
 
         renderWithProviders(<SearchPage />);
 
@@ -104,13 +104,13 @@ describe('SearchPage', () => {
 
         // Should debounce and then search
         await waitFor(() => {
-            expect(mockSearchTracks).toHaveBeenCalledWith('test query', expect.any(Object));
+            expect(mockSearch).toHaveBeenCalledWith('test query', expect.any(Object));
         }, { timeout: 2000 });
     });
 
     it('displays search results correctly', async () => {
-        const mockSearchTracks = require('../../services/api').searchTracks;
-        mockSearchTracks.mockResolvedValue(mockSearchResults);
+        const mockSearch = require('../../services/api').musicApi.search;
+        mockSearch.mockResolvedValue({ data: mockSearchResults });
 
         renderWithProviders(<SearchPage />);
 
@@ -136,8 +136,8 @@ describe('SearchPage', () => {
     });
 
     it('handles empty search results', async () => {
-        const mockSearchTracks = require('../../services/api').searchTracks;
-        mockSearchTracks.mockResolvedValue({ tracks: [], artists: [], albums: [], playlists: [] });
+        const mockSearch = require('../../services/api').musicApi.search;
+        mockSearch.mockResolvedValue({ data: { tracks: [], artists: [], albums: [], playlists: [] } });
 
         renderWithProviders(<SearchPage />);
 
@@ -150,8 +150,8 @@ describe('SearchPage', () => {
     });
 
     it('shows loading state during search', async () => {
-        const mockSearchTracks = require('../../services/api').searchTracks;
-        mockSearchTracks.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 1000)));
+        const mockSearch = require('../../services/api').musicApi.search;
+        mockSearch.mockImplementation(() => new Promise(resolve => setTimeout(resolve, 1000)));
 
         renderWithProviders(<SearchPage />);
 
@@ -164,8 +164,8 @@ describe('SearchPage', () => {
     });
 
     it('handles search errors gracefully', async () => {
-        const mockSearchTracks = require('../../services/api').searchTracks;
-        mockSearchTracks.mockRejectedValue(new Error('Search failed'));
+        const mockSearch = require('../../services/api').musicApi.search;
+        mockSearch.mockRejectedValue(new Error('Search failed'));
 
         renderWithProviders(<SearchPage />);
 

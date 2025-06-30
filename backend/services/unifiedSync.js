@@ -48,7 +48,7 @@ class UnifiedSyncService {
    */
   async performFullSync(userId, options = {}) {
     const syncId = this.generateSyncId();
-    
+
     try {
       logger.info(`Début de la synchronisation complète pour l'utilisateur ${userId}`, { syncId });
 
@@ -81,7 +81,7 @@ class UnifiedSyncService {
 
       // Phase 1: Collecte des données de tous les services
       const serviceData = await this.collectServiceData(userId, services);
-      
+
       // Phase 2: Analyse des mappings et conflits
       const mappings = await this.analyzeMappings(userId, serviceData);
       const conflicts = await this.detectConflicts(mappings);
@@ -122,8 +122,8 @@ class UnifiedSyncService {
       // Sauvegarder l'historique de synchronisation
       await this.saveSyncHistory(syncResult);
 
-      logger.info(`Synchronisation complète terminée pour l'utilisateur ${userId}`, { 
-        syncId, 
+      logger.info(`Synchronisation complète terminée pour l'utilisateur ${userId}`, {
+        syncId,
         duration: syncResult.statistics.duration,
         statistics: syncResult.statistics
       });
@@ -132,10 +132,10 @@ class UnifiedSyncService {
 
     } catch (error) {
       logger.error(`Erreur lors de la synchronisation complète pour l'utilisateur ${userId}:`, error);
-      
+
       // Sauvegarder l'erreur dans l'historique
       await this.saveSyncError(syncId, userId, error);
-      
+
       throw error;
     }
   }
@@ -145,7 +145,7 @@ class UnifiedSyncService {
    */
   async collectServiceData(userId, services) {
     const serviceData = {};
-    
+
     for (const serviceName of services) {
       try {
         const service = this.services.get(serviceName);
@@ -188,7 +188,7 @@ class UnifiedSyncService {
 
     // Récupérer les mappings existants depuis la base de données
     const existingMappings = await this.getExistingMappings(userId);
-    
+
     // Analyser les nouveaux éléments et créer des mappings
     for (const [serviceName, data] of Object.entries(serviceData)) {
       if (data.error) continue;
@@ -284,7 +284,7 @@ class UnifiedSyncService {
     try {
       // Logique de synchronisation des playlists
       // Pour l'instant, implémentation simplifiée
-      
+
       for (const [serviceName, data] of Object.entries(serviceData)) {
         if (data.error || !data.playlists) continue;
 
@@ -349,7 +349,7 @@ class UnifiedSyncService {
   /**
    * Méthodes utilitaires
    */
-  
+
   generateSyncId() {
     return `sync_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
   }
@@ -391,7 +391,7 @@ class UnifiedSyncService {
 
   extractAllTracks(serviceData) {
     const tracks = [];
-    
+
     // Extraire des playlists
     if (serviceData.playlists) {
       serviceData.playlists.forEach(playlist => {

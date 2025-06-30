@@ -8,6 +8,8 @@ import { useAuth } from '@/contexts/AuthContext';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { Track, Artist, Album as AlbumType, Playlist } from '@/types';
 import { musicApi } from '@/services/api';
+import { log } from '@/services/logger';
+import notifications from '@/services/notifications';
 
 interface SearchFilters {
     type: 'all' | 'tracks' | 'artists' | 'albums' | 'playlists';
@@ -70,7 +72,8 @@ export default function SearchPage() {
 
             setResults(transformedResults);
         } catch (error) {
-            console.error('Erreur lors de la recherche:', error);
+            log.error('Erreur lors de la recherche:', error);
+            notifications.error('Erreur lors de la recherche');
             setResults({ tracks: [], artists: [], albums: [], playlists: [], total: 0 });
         } finally {
             setIsLoading(false);

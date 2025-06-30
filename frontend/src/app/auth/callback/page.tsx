@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAuth } from '@/contexts/AuthContext';
 import { api } from '@/services/api';
+import { log } from '@/services/logger';
 
 export default function CallbackPage() {
   const [loading, setLoading] = useState(true);
@@ -46,7 +47,7 @@ export default function CallbackPage() {
         // Redirect to dashboard
         router.push('/dashboard');
       } catch (err: any) {
-        console.error('OAuth callback error:', err);
+        log.error('OAuth callback error:', err);
         setError(err.message || 'Authentication failed');
         setLoading(false);
       }

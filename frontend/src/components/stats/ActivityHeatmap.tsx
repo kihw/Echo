@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Calendar, Clock, Activity } from 'lucide-react';
+import { Calendar, Activity } from 'lucide-react';
 import { ListeningHistory } from '@/services/dashboard';
 
 interface ActivityHeatmapProps {

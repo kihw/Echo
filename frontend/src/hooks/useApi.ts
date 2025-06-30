@@ -329,6 +329,8 @@ export function useRetryApi<T = any>(
   const executeWithRetry = useCallback(async (...args: any[]) => {
     let currentRetry = 0;
 
+    // Sequential retries are intentional for retry logic
+    // eslint-disable-next-line no-await-in-loop
     while (currentRetry <= maxRetries) {
       try {
         setRetryCount(currentRetry);

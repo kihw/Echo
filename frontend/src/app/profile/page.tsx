@@ -3,6 +3,8 @@
 import { useAuth } from '@/hooks/useAuth';
 import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { useState } from 'react';
+import { log } from '@/services/logger';
+import notifications from '@/services/notifications';
 
 export default function ProfilePage() {
   const { user, updateUser } = useAuth();
@@ -20,10 +22,10 @@ export default function ProfilePage() {
         email: formData.email
       });
       setIsEditing(false);
-      alert('Profil mis à jour avec succès !');
+      notifications.success('Profil mis à jour avec succès !');
     } catch (error: any) {
-      console.error('Failed to update profile:', error);
-      alert(error.message || 'Erreur lors de la mise à jour du profil');
+      log.error('Failed to update profile:', error);
+      notifications.error(error.message || 'Erreur lors de la mise à jour du profil');
     }
   };
 

@@ -3,12 +3,13 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { Plus, Search, Filter, Grid, List, Play, Heart, MoreHorizontal } from 'lucide-react';
-import { DashboardLayout } from '@/components/layout/DashboardLayout';
 import { ResponsiveDashboardLayout } from '@/components/layout/ResponsiveDashboardLayout';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { Modal } from '@/components/ui/Modal';
 import { useAuth } from '@/contexts/AuthContext';
 import { playlistApi } from '@/services/api';
+import { log } from '@/services/logger';
+import notifications from '@/services/notifications';
 import type { Playlist } from '@/types';
 
 export default function PlaylistsPage() {
@@ -32,7 +33,8 @@ export default function PlaylistsPage() {
             const response = await playlistApi.getPlaylists();
             setPlaylists(response.data || []);
         } catch (error) {
-            console.error('Erreur lors du chargement des playlists:', error);
+            log.error('Erreur lors du chargement des playlists:', error);
+            notifications.error('Impossible de charger les playlists');
         } finally {
             setIsLoading(false);
         }
@@ -54,7 +56,8 @@ export default function PlaylistsPage() {
             setNewPlaylistDescription('');
             setShowCreateModal(false);
         } catch (error) {
-            console.error('Erreur lors de la création de la playlist:', error);
+            log.error('Erreur lors de la création de la playlist:', error);
+            notifications.error('Impossible de créer la playlist');
         } finally {
             setIsCreating(false);
         }
